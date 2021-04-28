@@ -27,26 +27,27 @@
         </Tab>
         <Tab text="Регистрация">
             <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="250.0" prefWidth="300.0">
-                <TextField alignment="CENTER" promptText="Логин" AnchorPane.bottomAnchor="162.0"
-                           AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="50.0" AnchorPane.topAnchor="25.0">
+                <TextField fx:id="regLogin" alignment="CENTER" promptText="Логин" AnchorPane.bottomAnchor="162.0" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="50.0" AnchorPane.topAnchor="25.0">
                     <font>
-                        <Font size="15.0"/>
+                        <Font size="15.0" />
                     </font>
                 </TextField>
-                <PasswordField alignment="CENTER" promptText="Пароль" AnchorPane.bottomAnchor="112.0"
-                               AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="50.0" AnchorPane.topAnchor="75.0">
+                <PasswordField fx:id="regPass" alignment="CENTER" promptText="Пароль" AnchorPane.bottomAnchor="112.0" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="50.0" AnchorPane.topAnchor="75.0">
                     <font>
-                        <Font size="15.0"/>
+                        <Font size="15.0" />
                     </font>
                 </PasswordField>
-                <PasswordField alignment="CENTER" promptText="Повторите пароль" AnchorPane.bottomAnchor="62.0"
-                               AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="50.0" AnchorPane.topAnchor="125.0">
+                <PasswordField fx:id="repeatRegPass" alignment="CENTER" promptText="Повторите пароль" AnchorPane.bottomAnchor="62.0" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="50.0" AnchorPane.topAnchor="125.0">
                     <font>
-                        <Font size="15.0"/>
+                        <Font size="15.0" />
                     </font>
                 </PasswordField>
-                <Button mnemonicParsing="false" fx:id="reg" text="Регистрация" AnchorPane.bottomAnchor="20.0"
-                        onAction="#getRegistration" AnchorPane.leftAnchor="97.0" AnchorPane.rightAnchor="97.0"/>
+                <Button fx:id="reg" mnemonicParsing="false" onAction="#getRegistration" text="Регистрация" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="97.0" AnchorPane.rightAnchor="97.0" />
+            </AnchorPane>
+        </Tab>
+        <Tab text="Подключение">
+            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="250.0" prefWidth="300.0">
+                
             </AnchorPane>
         </Tab>
     </TabPane>
