@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="250.0" prefWidth="300.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="boba.windows.AuthWindow">
+    <TabPane prefHeight="250.0" prefWidth="300.0" tabClosingPolicy="UNAVAILABLE">
+        <Tab text="Вход">
+            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="250.0" prefWidth="300.0">
+                <TextField fx:id="loginField" alignment="CENTER" promptText="Логин" AnchorPane.bottomAnchor="142.0" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="50.0" AnchorPane.topAnchor="45.0">
+                    <opaqueInsets>
+                        <Insets />
+                    </opaqueInsets>
+                    <font>
+                        <Font size="15.0" />
+                    </font>
+                </TextField>
+                <PasswordField fx:id="passField" alignment="CENTER" nodeOrientation="LEFT_TO_RIGHT" promptText="Пароль" AnchorPane.bottomAnchor="82.0" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="50.0" AnchorPane.topAnchor="105.0">
+                    <font>
+                        <Font size="15.0" />
+                    </font>
+                </PasswordField>
+            <Button fx:id="join" mnemonicParsing="false" onAction="#getAuthentication" text="Вход" AnchorPane.bottomAnchor="27.0" AnchorPane.leftAnchor="120.0" AnchorPane.rightAnchor="120.0" AnchorPane.topAnchor="160.0" />
+            </AnchorPane>
+        </Tab>
+        <Tab text="Регистрация">
+            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="250.0" prefWidth="300.0">
+                <TextField alignment="CENTER" promptText="Логин" AnchorPane.bottomAnchor="162.0"
+                           AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="50.0" AnchorPane.topAnchor="25.0">
+                    <font>
+                        <Font size="15.0"/>
+                    </font>
+                </TextField>
+                <PasswordField alignment="CENTER" promptText="Пароль" AnchorPane.bottomAnchor="112.0"
+                               AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="50.0" AnchorPane.topAnchor="75.0">
+                    <font>
+                        <Font size="15.0"/>
+                    </font>
+                </PasswordField>
+                <PasswordField alignment="CENTER" promptText="Повторите пароль" AnchorPane.bottomAnchor="62.0"
+                               AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="50.0" AnchorPane.topAnchor="125.0">
+                    <font>
+                        <Font size="15.0"/>
+                    </font>
+                </PasswordField>
+                <Button mnemonicParsing="false" fx:id="reg" text="Регистрация" AnchorPane.bottomAnchor="20.0"
+                        onAction="#getRegistration" AnchorPane.leftAnchor="97.0" AnchorPane.rightAnchor="97.0"/>
+            </AnchorPane>
+        </Tab>
+    </TabPane>
+</AnchorPane>

@@ -3,10 +3,16 @@ package toba.network;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import org.apache.log4j.Logger;
+import toba.coven.Gatekeeper;
 
 
-public class StringMessageHandler extends SimpleChannelInboundHandler<String> {
-    private static Logger log = Logger.getLogger(StringMessageHandler.class);
+public class Pechkin extends SimpleChannelInboundHandler<String> {
+    private static Logger log = Logger.getLogger(Pechkin.class);
+    private final Gatekeeper gatekeeper;
+
+    public Pechkin(Gatekeeper gatekeeper) {
+        this.gatekeeper = gatekeeper;
+    }
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
@@ -20,7 +26,7 @@ public class StringMessageHandler extends SimpleChannelInboundHandler<String> {
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, String s) throws Exception {
-        log.info("received: " + s);
-        ctx.writeAndFlush("echo: " + s);
+        String s1 = gatekeeper.work();
+        ctx.writeAndFlush("echo: " + s1);
     }
 }

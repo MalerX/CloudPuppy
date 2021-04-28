@@ -10,15 +10,16 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.codec.string.StringDecoder;
 import io.netty.handler.codec.string.StringEncoder;
 import org.apache.log4j.Logger;
+import toba.coven.Gatekeeper;
 
 public class ServerNetty {
     private static Logger log = Logger.getLogger(ServerNetty.class);
     private final int PORT;
-    private final StringMessageHandler messageHandler;
+//    private final Gatekeeper gatekeeper;
 
-    public ServerNetty(final int PORT, final StringMessageHandler handler) {
+    public ServerNetty(final int PORT) {
         this.PORT = PORT;
-        this.messageHandler = handler;
+//        this.gatekeeper = gatekeeper;
     }
 
     public void start() {
@@ -35,7 +36,7 @@ public class ServerNetty {
                             socketChannel.pipeline().addLast(
                                     new StringDecoder(),
                                     new StringEncoder(),
-                                    messageHandler
+                                    new Pechkin(new Gatekeeper())
                             );
                         }
                     });
