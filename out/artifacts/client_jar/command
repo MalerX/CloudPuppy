@@ -1,0 +1,1 @@
+~/.jdks/openjdk-15.0.2/bin/./java --module-path ~/.jdks/javafx-sdk-16/lib --add-modules javafx.controls,javafx.fxml -jar client.jar
