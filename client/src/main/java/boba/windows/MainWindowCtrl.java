@@ -1,6 +1,7 @@
 package boba.windows;
 
 import boba.network.NettyNetwork;
+import javafx.event.ActionEvent;
 import javafx.fxml.Initializable;
 import javafx.stage.Stage;
 
@@ -21,6 +22,10 @@ public class MainWindowCtrl implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+
+    }
+
+    public void backCloud(ActionEvent actionEvent) {
 
     }
 }
