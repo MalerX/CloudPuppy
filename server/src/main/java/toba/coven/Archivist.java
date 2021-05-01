@@ -21,7 +21,7 @@ public class Archivist {
             this.connection = DriverManager.getConnection("jdbc:sqlite:data/CLOUDPUPPY.users.db");
             connection.prepareStatement(
                     "CREATE TABLE if NOT EXISTS 'users'" +
-                    "('id' INTEGER PRIMARY KEY AUTOINCREMENT, 'login' TEXT NOT NULL UNIQUE, 'password' TEXT NOT NULL);")
+                            "('id' INTEGER PRIMARY KEY AUTOINCREMENT, 'login' TEXT NOT NULL UNIQUE, 'password' TEXT NOT NULL);")
                     .execute();
         } catch (SQLException | ClassNotFoundException e) {
             log.error("Fail open DB: ", e);
@@ -38,25 +38,34 @@ public class Archivist {
         buf.readBytes(msgIn);
         String authStr = new String(msgIn).trim();
 
-        if (authStr.startsWith(AUTH.name())) {
+        if (authStr.startsWith(AUTH.name()))
             return getAuth(authStr) ? AUTH_OK : AUTH_FAIL;
-
-        }
-        if (authStr.startsWith(REG.name())) {
+        if (authStr.startsWith(REG.name()))
             return getReg(authStr) ? REG_OK : REG_FAIL;
-        }
         return ERR;
     }
 
     private boolean getReg(String authStr) {
         String[] regStr = authStr.split("\\s", 4);
 
-        if (!regStr[2].equals(regStr[3]))
+        if (!regStr[2].equals(regStr[3])) {
+            log.info(String.format(
+                    "Registration user %s fail, wrong password.", regStr[1]));
             return false;
-//        try {
-        return true;
-//        }
-//        "INSERT INTO 'users' ('login', 'password', 'path') VALUES ('malerx', 'hjrft657', 'storage/malerx');"
+        }
+        try {
+            statement = connection.prepareStatement(
+                    "INSERT INTO 'users' ('login', 'password') VALUES (?, ?);"
+            );
+            statement.setString(1, regStr[1]);
+            statement.setString(2, regStr[2]);
+            statement.execute();
+            log.info(String.format("New user with login %s successfully registered.", regStr[1]));
+            return true;
+        } catch (SQLException e) {
+            log.error(String.format("Fail registration new user: %s", e));
+        }
+        return false;
     }
 
     private boolean getAuth(String authStr) {
@@ -73,8 +82,15 @@ public class Archivist {
                 login = resultSet.getString("login");
                 truePass = resultSet.getString("password");
             }
-        } catch (SQLException throwables) {
-            log.error("Error read DataBase ", throwables);
+        } catch (SQLException e) {
+            log.error("Error read DataBase ", e);
+        } finally {
+            try {
+                statement.close();
+                connection.close();
+            } catch (SQLException e) {
+                log.error("Fail close connection.");
+            }
         }
         return truePass.equals(loginPass[2]);
     }

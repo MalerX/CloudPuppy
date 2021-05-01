@@ -65,10 +65,6 @@ public class Gatekeeper extends ChannelInboundHandlerAdapter {
             }
             case AUTH_FAIL ->
                     log.info("Authentication fail.");
-            case REG_OK ->
-                    log.info("New user registered.");
-            case REG_FAIL ->
-                    log.info("New user register fail.");
         }
         return Unpooled.wrappedBuffer(commands.name().getBytes(StandardCharsets.UTF_8));
     }
