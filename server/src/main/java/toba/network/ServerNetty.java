@@ -15,11 +15,9 @@ import toba.coven.Gatekeeper;
 public class ServerNetty {
     private static Logger log = Logger.getLogger(ServerNetty.class);
     private final int PORT;
-//    private final Gatekeeper gatekeeper;
 
     public ServerNetty(final int PORT) {
         this.PORT = PORT;
-//        this.gatekeeper = gatekeeper;
     }
 
     public void start() {
@@ -33,11 +31,8 @@ public class ServerNetty {
                     .childHandler(new ChannelInitializer<SocketChannel>() {
                         @Override
                         protected void initChannel(SocketChannel socketChannel) throws Exception {
-                            socketChannel.pipeline().addLast(
-                                    new StringDecoder(),
-                                    new StringEncoder(),
-                                    new Pechkin(new Gatekeeper())
-                            );
+                            socketChannel.pipeline()
+                                    .addLast(new Gatekeeper());
                         }
                     });
             ChannelFuture future = bootstrap.bind(PORT).sync();
