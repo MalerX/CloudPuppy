@@ -26,7 +26,6 @@ public class Pechkin extends SimpleChannelInboundHandler<String> {
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, String s) throws Exception {
-        String s1 = gatekeeper.work();
-        ctx.writeAndFlush("echo: " + s1);
+        gatekeeper.work(ctx);
     }
 }

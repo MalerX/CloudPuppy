@@ -5,162 +5,148 @@
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane prefHeight="500.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="boba.windows.MainWindowCtrl">
-    <MenuBar AnchorPane.bottomAnchor="470.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+<AnchorPane prefHeight="500.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/11.0.1"
+            xmlns:fx="http://javafx.com/fxml/1" fx:controller="boba.windows.MainWindowCtrl">
+    <MenuBar AnchorPane.bottomAnchor="470.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
+             AnchorPane.topAnchor="0.0">
         <Menu mnemonicParsing="false" text="File">
-            <MenuItem mnemonicParsing="false" text="Close" />
+            <MenuItem mnemonicParsing="false" text="Close"/>
         </Menu>
         <Menu mnemonicParsing="false" text="Edit">
-            <MenuItem mnemonicParsing="false" text="Delete" />
+            <MenuItem mnemonicParsing="false" text="Delete"/>
         </Menu>
         <Menu mnemonicParsing="false" text="Help">
-            <MenuItem mnemonicParsing="false" text="About" />
+            <MenuItem mnemonicParsing="false" text="About"/>
         </Menu>
     </MenuBar>
-    <ListView focusTraversable="false" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="25.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="330.0" AnchorPane.topAnchor="90.0" />
-    <ButtonBar buttonMinWidth="32.0" prefHeight="32.0" prefWidth="270.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="320.0" AnchorPane.topAnchor="40.0">
+    <ListView focusTraversable="false" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="25.0"
+              AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="330.0" AnchorPane.topAnchor="90.0"/>
+    <ButtonBar buttonMinWidth="32.0" prefHeight="32.0" prefWidth="270.0" AnchorPane.leftAnchor="10.0"
+               AnchorPane.rightAnchor="320.0" AnchorPane.topAnchor="40.0">
         <buttons>
             <Button mnemonicParsing="false" prefHeight="32.0" prefWidth="32.0" translateX="-28.0">
                 <graphic>
                     <ImageView fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">
-                  <image>
-                     <Image url="@ico/draw-arrow-back.png" />
-                  </image></ImageView>
+                        <Image url="@ico/draw-arrow-back.png"/>
+                    </ImageView>
                 </graphic>
             </Button>
-         <Button layoutX="248.0" layoutY="10.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="32.0" translateX="-28.0">
-            <graphic>
-               <ImageView fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">
-                  <image>
-                     <Image url="@ico/draw-arrow-forward.png" />
-                  </image>
-               </ImageView>
-            </graphic>
-         </Button>
-         <Button layoutX="248.0" layoutY="10.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="32.0" translateX="-28.0">
-            <graphic>
-               <ImageView fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">
-                  <image>
-                     <Image url="@ico/draw-arrow-up.png" />
-                  </image>
-               </ImageView>
-            </graphic>
-         </Button>
-         <Button layoutX="248.0" layoutY="10.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="32.0" translateX="-28.0">
-            <graphic>
-               <ImageView fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">
-                  <image>
-                     <Image url="@ico/view-refresh-4.png" />
-                  </image>
-               </ImageView>
-            </graphic>
-         </Button>
-         <Button layoutX="248.0" layoutY="10.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="32.0" translateX="-10.0">
-            <graphic>
-               <ImageView fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">
-                  <image>
-                     <Image url="@ico/folder-new-7.png" />
-                  </image>
-               </ImageView>
-            </graphic>
-         </Button>
-         <Button layoutX="248.0" layoutY="10.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="32.0" translateX="-10.0">
-            <graphic>
-               <ImageView fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">
-                  <image>
-                     <Image url="@ico/view-remove.png" />
-                  </image>
-               </ImageView>
-            </graphic>
-         </Button>
+            <Button layoutX="248.0" layoutY="10.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="32.0"
+                    translateX="-28.0">
+                <graphic>
+                    <ImageView fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">
+                        <Image url="@ico/draw-arrow-forward.png"/>
+                    </ImageView>
+                </graphic>
+            </Button>
+            <Button layoutX="248.0" layoutY="10.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="32.0"
+                    translateX="-28.0">
+                <graphic>
+                    <ImageView fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">
+                        <Image url="@ico/draw-arrow-up.png"/>
+                    </ImageView>
+                </graphic>
+            </Button>
+            <Button layoutX="248.0" layoutY="10.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="32.0"
+                    translateX="-28.0">
+                <graphic>
+                    <ImageView fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">
+                        <Image url="@ico/view-refresh-4.png"/>
+                    </ImageView>
+                </graphic>
+            </Button>
+            <Button layoutX="248.0" layoutY="10.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="32.0"
+                    translateX="-10.0">
+                <graphic>
+                    <ImageView fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">
+                        <Image url="@ico/folder-new-7.png"/>
+                    </ImageView>
+                </graphic>
+            </Button>
+            <Button layoutX="248.0" layoutY="10.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="32.0"
+                    translateX="-10.0">
+                <graphic>
+                    <ImageView fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">
+                        <Image url="@ico/view-remove.png"/>
+                    </ImageView>
+                </graphic>
+            </Button>
         </buttons>
     </ButtonBar>
-    <ListView focusTraversable="false" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="25.0" AnchorPane.leftAnchor="330.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="90.0" />
-   <ButtonBar buttonMinWidth="32.0" layoutX="20.0" layoutY="50.0" prefHeight="32.0" prefWidth="270.0" AnchorPane.leftAnchor="320.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="40.0">
-      <buttons>
-         <Button mnemonicParsing="false" prefHeight="32.0" prefWidth="32.0" translateX="-19.0">
-            <graphic>
-               <ImageView fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">
-                  <image>
-                     <Image url="@ico/draw-arrow-back.png" />
-                  </image>
-               </ImageView>
-            </graphic>
-         </Button>
-         <Button layoutX="248.0" layoutY="10.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="32.0" translateX="-19.0">
-            <graphic>
-               <ImageView fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">
-                  <image>
-                     <Image url="@ico/draw-arrow-forward.png" />
-                  </image>
-               </ImageView>
-            </graphic>
-         </Button>
-         <Button layoutX="248.0" layoutY="10.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="32.0" translateX="-19.0">
-            <graphic>
-               <ImageView fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">
-                  <image>
-                     <Image url="@ico/draw-arrow-up.png" />
-                  </image>
-               </ImageView>
-            </graphic>
-         </Button>
-         <Button layoutX="248.0" layoutY="10.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="32.0" translateX="-19.0">
-            <graphic>
-               <ImageView fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">
-                  <image>
-                     <Image url="@ico/view-refresh-4.png" />
-                  </image>
-               </ImageView>
-            </graphic>
-         </Button>
-         <Button layoutX="248.0" layoutY="10.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="32.0">
-            <graphic>
-               <ImageView fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">
-                  <image>
-                     <Image url="@ico/folder-new-7.png" />
-                  </image>
-               </ImageView>
-            </graphic>
-         </Button>
-         <Button layoutX="248.0" layoutY="10.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="32.0">
-            <graphic>
-               <ImageView fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">
-                  <image>
-                     <Image url="@ico/view-remove.png" />
-                  </image>
-               </ImageView>
-            </graphic>
-         </Button>
-      </buttons>
-   </ButtonBar>
-   <VBox prefHeight="100.0" prefWidth="40.0" AnchorPane.leftAnchor="271.0" AnchorPane.topAnchor="220.0">
-      <children>
-         <Button mnemonicParsing="false" prefHeight="32.0" prefWidth="32.0">
+    <ListView focusTraversable="false" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="25.0"
+              AnchorPane.leftAnchor="330.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="90.0"/>
+    <ButtonBar buttonMinWidth="32.0" layoutX="20.0" layoutY="50.0" prefHeight="32.0" prefWidth="270.0"
+               AnchorPane.leftAnchor="320.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="40.0">
+        <buttons>
+            <Button mnemonicParsing="false" prefHeight="32.0" prefWidth="32.0" translateX="-19.0">
+                <graphic>
+                    <ImageView fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">
+                        <Image url="@ico/draw-arrow-back.png"/>
+                    </ImageView>
+                </graphic>
+            </Button>
+            <Button layoutX="248.0" layoutY="10.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="32.0"
+                    translateX="-19.0">
+                <graphic>
+                    <ImageView fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">
+                        <Image url="@ico/draw-arrow-forward.png"/>
+                    </ImageView>
+                </graphic>
+            </Button>
+            <Button layoutX="248.0" layoutY="10.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="32.0"
+                    translateX="-19.0">
+                <graphic>
+                    <ImageView fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">
+                        <Image url="@ico/draw-arrow-up.png"/>
+                    </ImageView>
+                </graphic>
+            </Button>
+            <Button layoutX="248.0" layoutY="10.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="32.0"
+                    translateX="-19.0">
+                <graphic>
+                    <ImageView fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">
+                        <Image url="@ico/view-refresh-4.png"/>
+                    </ImageView>
+                </graphic>
+            </Button>
+            <Button layoutX="248.0" layoutY="10.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="32.0">
+                <graphic>
+                    <ImageView fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">
+                        <Image url="@ico/folder-new-7.png"/>
+                    </ImageView>
+                </graphic>
+            </Button>
+            <Button layoutX="248.0" layoutY="10.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="32.0">
+                <graphic>
+                    <ImageView fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">
+                        <Image url="@ico/view-remove.png"/>
+                    </ImageView>
+                </graphic>
+            </Button>
+        </buttons>
+    </ButtonBar>
+    <VBox prefHeight="100.0" prefWidth="40.0" AnchorPane.leftAnchor="271.0" AnchorPane.topAnchor="220.0">
+        <Button mnemonicParsing="false" prefHeight="32.0" prefWidth="32.0">
             <VBox.margin>
-               <Insets left="4.0" top="5.0" />
+                <Insets left="4.0" top="5.0"/>
             </VBox.margin>
             <graphic>
-               <ImageView fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">
-                  <image>
-                     <Image url="@ico/media-seek-forward-4.png" />
-                  </image>
-               </ImageView>
+                <ImageView fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">
+                    <Image url="@ico/media-seek-forward-4.png"/>
+                </ImageView>
             </graphic>
-         </Button>
-         <Button layoutX="14.0" layoutY="15.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="32.0">
+        </Button>
+        <Button layoutX="14.0" layoutY="15.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="32.0">
             <VBox.margin>
-               <Insets left="4.0" top="20.0" />
+                <Insets left="4.0" top="20.0"/>
             </VBox.margin>
             <graphic>
-               <ImageView fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">
-                  <image>
-                     <Image url="@ico/media-seek-backward-4.png" />
-                  </image>
-               </ImageView>
+                <ImageView fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">
+                    <Image url="@ico/media-seek-backward-4.png"/>
+                </ImageView>
             </graphic>
-         </Button>
-      </children>
-   </VBox>
-    <HBox prefHeight="100.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="475.0" />
+        </Button>
+    </VBox>
+    <HBox prefHeight="100.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
+          AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="475.0"/>
 </AnchorPane>

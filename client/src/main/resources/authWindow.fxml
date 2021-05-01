@@ -59,7 +59,27 @@
         </Tab>
         <Tab text="Подключение">
             <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="250.0" prefWidth="300.0">
-
+                <TextField alignment="CENTER" fx:id="serverAddress" prefHeight="30.0" prefWidth="150.0" promptText="Address"
+                           text="127.0.0.1" AnchorPane.bottomAnchor="137.0" AnchorPane.leftAnchor="40.0"
+                           AnchorPane.rightAnchor="120.0" AnchorPane.topAnchor="50.0">
+                    <font>
+                        <Font size="15.0"/>
+                    </font>
+                </TextField>
+                <TextField alignment="CENTER" fx:id="PORT" prefHeight="30.0" prefWidth="70.0" promptText="PORT" text="8189"
+                           AnchorPane.bottomAnchor="137.0" AnchorPane.leftAnchor="200.0"
+                           AnchorPane.rightAnchor="40.0" AnchorPane.topAnchor="50.0">
+                    <font>
+                        <Font size="15.0"/>
+                    </font>
+                </TextField>
+                <TextField alignment="CENTER" fx:id="workDir" prefHeight="30.0" promptText="User files local directory"
+                           text="data/storage" AnchorPane.bottomAnchor="67.0" AnchorPane.leftAnchor="40.0"
+                           AnchorPane.rightAnchor="40.0" AnchorPane.topAnchor="120.0">
+                    <font>
+                        <Font size="15.0"/>
+                    </font>
+                </TextField>
             </AnchorPane>
         </Tab>
     </TabPane>
