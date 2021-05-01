@@ -24,47 +24,48 @@
     <ButtonBar buttonMinWidth="32.0" prefHeight="32.0" prefWidth="270.0" AnchorPane.leftAnchor="10.0"
                AnchorPane.rightAnchor="320.0" AnchorPane.topAnchor="40.0">
         <buttons>
-            <Button mnemonicParsing="false" prefHeight="32.0" prefWidth="32.0" translateX="-28.0">
+            <Button fx:id="backCloud" mnemonicParsing="false" prefHeight="32.0" prefWidth="32.0" translateX="-28.0"
+                    onAction="#backCloud">
                 <graphic>
                     <ImageView fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">
                         <Image url="@ico/draw-arrow-back.png"/>
                     </ImageView>
                 </graphic>
             </Button>
-            <Button layoutX="248.0" layoutY="10.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="32.0"
-                    translateX="-28.0">
+            <Button fx:id="forwardCloud" layoutX="248.0" layoutY="10.0" mnemonicParsing="false" prefHeight="32.0"
+                    prefWidth="32.0" translateX="-28.0">
                 <graphic>
                     <ImageView fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">
                         <Image url="@ico/draw-arrow-forward.png"/>
                     </ImageView>
                 </graphic>
             </Button>
-            <Button layoutX="248.0" layoutY="10.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="32.0"
-                    translateX="-28.0">
+            <Button fx:id="upDirCloud" layoutX="248.0" layoutY="10.0" mnemonicParsing="false" prefHeight="32.0"
+                    prefWidth="32.0" translateX="-28.0">
                 <graphic>
                     <ImageView fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">
                         <Image url="@ico/draw-arrow-up.png"/>
                     </ImageView>
                 </graphic>
             </Button>
-            <Button layoutX="248.0" layoutY="10.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="32.0"
-                    translateX="-28.0">
+            <Button fx:id="refreshCloud" layoutX="248.0" layoutY="10.0" mnemonicParsing="false" prefHeight="32.0"
+                    prefWidth="32.0" translateX="-28.0">
                 <graphic>
                     <ImageView fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">
                         <Image url="@ico/view-refresh-4.png"/>
                     </ImageView>
                 </graphic>
             </Button>
-            <Button layoutX="248.0" layoutY="10.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="32.0"
-                    translateX="-10.0">
+            <Button fx:id="mkdirCloud" layoutX="248.0" layoutY="10.0" mnemonicParsing="false" prefHeight="32.0"
+                    prefWidth="32.0" translateX="-10.0">
                 <graphic>
                     <ImageView fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">
                         <Image url="@ico/folder-new-7.png"/>
                     </ImageView>
                 </graphic>
             </Button>
-            <Button layoutX="248.0" layoutY="10.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="32.0"
-                    translateX="-10.0">
+            <Button fx:id="rmDirCloud" layoutX="248.0" layoutY="10.0" mnemonicParsing="false" prefHeight="32.0"
+                    prefWidth="32.0" translateX="-10.0">
                 <graphic>
                     <ImageView fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">
                         <Image url="@ico/view-remove.png"/>
@@ -78,45 +79,47 @@
     <ButtonBar buttonMinWidth="32.0" layoutX="20.0" layoutY="50.0" prefHeight="32.0" prefWidth="270.0"
                AnchorPane.leftAnchor="320.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="40.0">
         <buttons>
-            <Button mnemonicParsing="false" prefHeight="32.0" prefWidth="32.0" translateX="-19.0">
+            <Button fx:id="backLocal" mnemonicParsing="false" prefHeight="32.0" prefWidth="32.0" translateX="-19.0">
                 <graphic>
                     <ImageView fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">
                         <Image url="@ico/draw-arrow-back.png"/>
                     </ImageView>
                 </graphic>
             </Button>
-            <Button layoutX="248.0" layoutY="10.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="32.0"
-                    translateX="-19.0">
+            <Button fx:id="forwardLocal" layoutX="248.0" layoutY="10.0" mnemonicParsing="false" prefHeight="32.0"
+                    prefWidth="32.0" translateX="-19.0">
                 <graphic>
                     <ImageView fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">
                         <Image url="@ico/draw-arrow-forward.png"/>
                     </ImageView>
                 </graphic>
             </Button>
-            <Button layoutX="248.0" layoutY="10.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="32.0"
-                    translateX="-19.0">
+            <Button fx:id="upDirLocal" layoutX="248.0" layoutY="10.0" mnemonicParsing="false" prefHeight="32.0"
+                    prefWidth="32.0" translateX="-19.0">
                 <graphic>
                     <ImageView fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">
                         <Image url="@ico/draw-arrow-up.png"/>
                     </ImageView>
                 </graphic>
             </Button>
-            <Button layoutX="248.0" layoutY="10.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="32.0"
-                    translateX="-19.0">
+            <Button fx:id="refreshLocal" layoutX="248.0" layoutY="10.0" mnemonicParsing="false" prefHeight="32.0"
+                    prefWidth="32.0" translateX="-19.0">
                 <graphic>
                     <ImageView fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">
                         <Image url="@ico/view-refresh-4.png"/>
                     </ImageView>
                 </graphic>
             </Button>
-            <Button layoutX="248.0" layoutY="10.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="32.0">
+            <Button fx:id="mkdirLocal" layoutX="248.0" layoutY="10.0" mnemonicParsing="false" prefHeight="32.0"
+                    prefWidth="32.0">
                 <graphic>
                     <ImageView fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">
                         <Image url="@ico/folder-new-7.png"/>
                     </ImageView>
                 </graphic>
             </Button>
-            <Button layoutX="248.0" layoutY="10.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="32.0">
+            <Button fx:id="rmDirLocal" layoutX="248.0" layoutY="10.0" mnemonicParsing="false" prefHeight="32.0"
+                    prefWidth="32.0">
                 <graphic>
                     <ImageView fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">
                         <Image url="@ico/view-remove.png"/>
