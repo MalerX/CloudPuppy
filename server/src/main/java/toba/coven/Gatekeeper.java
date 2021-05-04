@@ -4,11 +4,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
-import lupa.Commands;
 import org.apache.log4j.Logger;
-
-import java.io.ByteArrayInputStream;
-import java.nio.charset.StandardCharsets;
 
 import static lupa.SignalBytes.AUTH_FAIL;
 import static lupa.SignalBytes.AUTH_OK;
@@ -65,9 +61,8 @@ public class Gatekeeper extends ChannelInboundHandlerAdapter {
                 homeDir += login;
                 log.info(String.format("Authentication successful. User: %s", login));
             }
-            case AUTH_FAIL ->
-                    log.info("Authentication fail.");
+            case AUTH_FAIL -> log.info("Authentication fail.");
         }
-        return Unpooled.wrappedBuffer(new byte[] {resultByte});
+        return Unpooled.wrappedBuffer(new byte[]{resultByte});
     }
 }

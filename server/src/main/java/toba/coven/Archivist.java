@@ -37,17 +37,19 @@ public class Archivist {
     }
 
     public byte authentication(Object msg) {
-        ByteArrayInputStream buff = new ByteArrayInputStream(((ByteBuf) msg).array());
-        int signal = buff.read();
+        ByteBuf buff = (ByteBuf) msg;
+        ByteBuffer inBuff = buff.nioBuffer();
+        byte signal = inBuff.get();
+
 
         if (signal == AUTH)
-            return getAuth(buff) ? AUTH_OK : AUTH_FAIL;
+            return getAuth(inBuff) ? AUTH_OK : AUTH_FAIL;
         if (signal == REG)
-            return getReg(buff) ? REG_OK : REG_FAIL;
+            return getReg(inBuff) ? REG_OK : REG_FAIL;
         return ERR;
     }
 
-    private boolean getReg(ByteArrayInputStream buff) {
+    private boolean getReg(ByteBuffer buff) {
         try {
             Pair<String, String> loginPass = getLoginPassword(buff);
 
@@ -65,15 +67,16 @@ public class Archivist {
         return false;
     }
 
-    private boolean getAuth(ByteArrayInputStream buff) {
+    private boolean getAuth(ByteBuffer buff) {
         String truePass = "";
         Pair<String, String> loginPass = new Pair<>(null, null);
         try {
             loginPass = getLoginPassword(buff);
+            login = loginPass.getKey();
             statement = connection.prepareStatement(
                     "SELECT * FROM users WHERE login = ?"
             );
-            statement.setString(1, loginPass.getKey());
+            statement.setString(1, login);
             ResultSet resultSet = statement.executeQuery();
             while (resultSet.next()) {
                 truePass = resultSet.getString("password");
@@ -91,15 +94,17 @@ public class Archivist {
         return truePass.equals(loginPass.getValue());
     }
 
-    private Pair<String, String> getLoginPassword(ByteArrayInputStream buff) throws IOException {
+    private Pair<String, String> getLoginPassword(ByteBuffer buff) throws IOException {
         byte[] tmpByteArray = new byte[LEN_INT];
 
-        buff.read(tmpByteArray);
+        buff.get(tmpByteArray);
         byte[] loginInByte = new byte[ByteBuffer.wrap(tmpByteArray).getInt()];
+        buff.get(loginInByte);
         String inLogin = new String(loginInByte);
 
-        buff.read(tmpByteArray);
+        buff.get(tmpByteArray);
         byte[] passwordInByte = new byte[ByteBuffer.wrap(tmpByteArray).getInt()];
+        buff.get(passwordInByte);
         String inPassword = new String(passwordInByte);
 
         return new Pair<>(inLogin, inPassword);

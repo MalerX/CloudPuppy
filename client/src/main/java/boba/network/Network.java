@@ -7,22 +7,32 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 
-public class Network {
+public class Network implements Runnable {
     private static final Logger log = Logger.getLogger(Network.class);
 
     private final String server_address;
     private final int port;
+    private static Network instance = null;
 
     private Socket socket;
     private DataInputStream in;
     private DataOutputStream out;
 
-    public Network(String server_address, int port) {
+    public static Network getInstance(String server_address, int port) {
+        if (instance == null) {
+            instance = new Network(server_address, port);
+            return instance;
+        }
+        return instance;
+    }
+
+    private Network(String server_address, int port) {
         this.server_address = server_address;
         this.port = port;
     }
 
-    public void start() {
+    @Override
+    public void run() {
         try {
             socket = new Socket(server_address, port);
             in = new DataInputStream(socket.getInputStream());
@@ -49,6 +59,7 @@ public class Network {
             log.error("Fail sending message: ", e);
         }
     }
+
     public byte[] received() {
         try {
             int msgLen = in.available();
