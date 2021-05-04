@@ -7,13 +7,15 @@ import io.netty.channel.ChannelInboundHandlerAdapter;
 import lupa.Commands;
 import org.apache.log4j.Logger;
 
+import java.io.ByteArrayInputStream;
 import java.nio.charset.StandardCharsets;
 
-import static lupa.Commands.*;
+import static lupa.SignalBytes.AUTH_FAIL;
+import static lupa.SignalBytes.AUTH_OK;
 
 public class Gatekeeper extends ChannelInboundHandlerAdapter {
     private static final Logger log = Logger.getLogger(Gatekeeper.class);
-    private boolean auth_ok = false;
+    private boolean auth = false;
     private String homeDir = "storage/";
     private String login;
 
@@ -38,7 +40,7 @@ public class Gatekeeper extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-        if (!auth_ok)
+        if (!auth)
             ctx.writeAndFlush(getAuth(msg));
         else {
             ByteBuf buf = ((ByteBuf) msg);
@@ -55,10 +57,10 @@ public class Gatekeeper extends ChannelInboundHandlerAdapter {
 
     private ByteBuf getAuth(Object msg) {
         Archivist arch = new Archivist();
-        Commands commands = arch.authentication(msg);
-        switch (commands) {
+        byte resultByte = arch.authentication(msg);
+        switch (resultByte) {
             case AUTH_OK -> {
-                auth_ok = true;
+                auth = true;
                 login = arch.getLogin();
                 homeDir += login;
                 log.info(String.format("Authentication successful. User: %s", login));
@@ -66,6 +68,6 @@ public class Gatekeeper extends ChannelInboundHandlerAdapter {
             case AUTH_FAIL ->
                     log.info("Authentication fail.");
         }
-        return Unpooled.wrappedBuffer(commands.name().getBytes(StandardCharsets.UTF_8));
+        return Unpooled.wrappedBuffer(new byte[] {resultByte});
     }
 }

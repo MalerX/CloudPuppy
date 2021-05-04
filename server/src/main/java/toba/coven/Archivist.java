@@ -1,15 +1,19 @@
 package toba.coven;
 
 import io.netty.buffer.ByteBuf;
-
-import static lupa.Commands.*;
-
-import lupa.Commands;
+import javafx.util.Pair;
 import org.apache.log4j.Logger;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.sql.*;
 
+import static lupa.SignalBytes.*;
+
 public class Archivist {
+    private static final int LEN_INT = 4;
+
     private static final Logger log = Logger.getLogger(Archivist.class);
     private String login;
     private Connection connection;
@@ -32,57 +36,49 @@ public class Archivist {
         return login;
     }
 
-    public Commands authentication(Object msg) {
-        ByteBuf buf = ((ByteBuf) msg);
-        byte[] msgIn = new byte[buf.readableBytes()];
-        buf.readBytes(msgIn);
-        String authStr = new String(msgIn).trim();
+    public byte authentication(Object msg) {
+        ByteArrayInputStream buff = new ByteArrayInputStream(((ByteBuf) msg).array());
+        int signal = buff.read();
 
-        if (authStr.startsWith(AUTH.name()))
-            return getAuth(authStr) ? AUTH_OK : AUTH_FAIL;
-        if (authStr.startsWith(REG.name()))
-            return getReg(authStr) ? REG_OK : REG_FAIL;
+        if (signal == AUTH)
+            return getAuth(buff) ? AUTH_OK : AUTH_FAIL;
+        if (signal == REG)
+            return getReg(buff) ? REG_OK : REG_FAIL;
         return ERR;
     }
 
-    private boolean getReg(String authStr) {
-        String[] regStr = authStr.split("\\s", 4);
-
-        if (!regStr[2].equals(regStr[3])) {
-            log.info(String.format(
-                    "Registration user %s fail, wrong password.", regStr[1]));
-            return false;
-        }
+    private boolean getReg(ByteArrayInputStream buff) {
         try {
+            Pair<String, String> loginPass = getLoginPassword(buff);
+
             statement = connection.prepareStatement(
                     "INSERT INTO 'users' ('login', 'password') VALUES (?, ?);"
             );
-            statement.setString(1, regStr[1]);
-            statement.setString(2, regStr[2]);
+            statement.setString(1, loginPass.getKey());
+            statement.setString(2, loginPass.getValue());
             statement.execute();
-            log.info(String.format("New user with login %s successfully registered.", regStr[1]));
+            log.info(String.format("New user with login %s successfully registered.", loginPass.getKey()));
             return true;
-        } catch (SQLException e) {
+        } catch (SQLException | IOException e) {
             log.error(String.format("Fail registration new user: %s", e));
         }
         return false;
     }
 
-    private boolean getAuth(String authStr) {
-        String[] loginPass = authStr.split("\\s");
+    private boolean getAuth(ByteArrayInputStream buff) {
         String truePass = "";
-
+        Pair<String, String> loginPass = new Pair<>(null, null);
         try {
+            loginPass = getLoginPassword(buff);
             statement = connection.prepareStatement(
                     "SELECT * FROM users WHERE login = ?"
             );
-            statement.setString(1, loginPass[1]);
+            statement.setString(1, loginPass.getKey());
             ResultSet resultSet = statement.executeQuery();
             while (resultSet.next()) {
-                login = resultSet.getString("login");
                 truePass = resultSet.getString("password");
             }
-        } catch (SQLException e) {
+        } catch (SQLException | IOException e) {
             log.error("Error read DataBase ", e);
         } finally {
             try {
@@ -92,6 +88,20 @@ public class Archivist {
                 log.error("Fail close connection.");
             }
         }
-        return truePass.equals(loginPass[2]);
+        return truePass.equals(loginPass.getValue());
+    }
+
+    private Pair<String, String> getLoginPassword(ByteArrayInputStream buff) throws IOException {
+        byte[] tmpByteArray = new byte[LEN_INT];
+
+        buff.read(tmpByteArray);
+        byte[] loginInByte = new byte[ByteBuffer.wrap(tmpByteArray).getInt()];
+        String inLogin = new String(loginInByte);
+
+        buff.read(tmpByteArray);
+        byte[] passwordInByte = new byte[ByteBuffer.wrap(tmpByteArray).getInt()];
+        String inPassword = new String(passwordInByte);
+
+        return new Pair<>(inLogin, inPassword);
     }
 }

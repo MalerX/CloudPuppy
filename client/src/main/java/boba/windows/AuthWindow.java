@@ -1,11 +1,8 @@
 package boba.windows;
 
-import boba.network.NettyNetwork;
+import boba.network.Network;
 import boba.network.SocketClientServer;
-import io.netty.buffer.ByteBuf;
-import io.netty.channel.socket.SocketChannel;
 import javafx.application.Platform;
-import javafx.concurrent.Service;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -16,13 +13,10 @@ import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
-import lupa.Callback;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
-import java.net.Socket;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.ResourceBundle;
 
 public class AuthWindow implements Initializable {
@@ -51,21 +45,16 @@ public class AuthWindow implements Initializable {
     @FXML
     public PasswordField repeatRegPass;
 
-    private DataInputStream in;
-    private DataOutputStream out;
-
-    private Callback callback;
-    private SocketClientServer client;
-
-    private Service<Void> transmitter;
+    private Network net;
 
     public void setAuthWindow(Stage authWindow) {
         this.authWindow = authWindow;
     }
 
     public void getAuthentication(ActionEvent actionEvent) throws IOException {
-        connect();
-        client.write("hello");
+        byte[] msg = "AUTH malerx hjrft657".getBytes(StandardCharsets.UTF_8);
+        net.send(msg);
+        System.out.println(net.received().toString());
     }
 
     public void getRegistration(ActionEvent actionEvent) {
@@ -86,34 +75,9 @@ public class AuthWindow implements Initializable {
 
     }
 
-    private void connect() {
-        client = SocketClientServer.getInstance(serverAddress.getText(),
-                Integer.parseInt(PORT.getText()));
-        Platform.runLater(client);
-    }
-
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        try {
-            Socket socket = new Socket(serverAddress.getText(), Integer.parseInt(PORT.getText()));
-            in = new DataInputStream(socket.getInputStream());
-            out = new DataOutputStream(socket.getOutputStream());
-            byte[] buff = new byte[256];
-            new Thread(() -> {
-                try {
-                    while (true) {
-                        int size = in.read(buff);
-                        while (size != 0) {
-                            System.out.print(buff.toString());
-                        }
-
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }).start();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        net = new Network(serverAddress.getText(), Integer.parseInt(PORT.getText()));
+        net.start();
     }
 }
