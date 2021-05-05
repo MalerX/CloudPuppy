@@ -54,26 +54,27 @@ public class AuthWindow implements Initializable {
     public PasswordField repeatRegPass;
 
     private Network net;
-    private BlockingQueue<byte[]> sendQueue = new LinkedBlockingQueue<>();
-    private BlockingQueue<byte[]> answerQueue = new LinkedBlockingQueue<>();
+    private final BlockingQueue<byte[]> sendQueue = new LinkedBlockingQueue<>();
+    private final BlockingQueue<byte[]> answerQueue = new LinkedBlockingQueue<>();
 
     public void setAuthWindow(Stage authWindow) {
         this.authWindow = authWindow;
     }
 
     public void getAuthentication(ActionEvent actionEvent) throws IOException, InterruptedException {
-        ByteBuffer outMsg = buildAuthData(AUTH, loginField.getText(), passField.getText());
+        ByteBuffer outMsg = buildAuthData(
+                AUTH,
+                loginField.getText(),
+                passField.getText());
+
         if (outMsg == null)
             return;
         sendQueue.add(outMsg.array());
         log.info("Auth data add in queue send.");
         byte[] answer;
 
-        while (answerQueue.isEmpty())       //Костыль, но более элегантный, нежели Thread.sleep()
-            answer = null;
-        answer = answerQueue.poll();
+        answer = answerQueue.take();
 
-        assert answer != null;
         if (answer[0] == AUTH_OK)
             authOk();
 

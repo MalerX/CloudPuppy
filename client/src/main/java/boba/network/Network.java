@@ -2,10 +2,10 @@ package boba.network;
 
 import org.apache.log4j.Logger;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.net.Socket;
+import java.util.Objects;
+import java.util.Queue;
 import java.util.concurrent.BlockingQueue;
 
 public class Network implements Runnable {
@@ -16,8 +16,6 @@ public class Network implements Runnable {
     private static Network instance = null;
 
     private Socket socket;
-    private DataInputStream in;
-    private DataOutputStream out;
     private Sender sender;
     private Received received;
 
@@ -35,11 +33,9 @@ public class Network implements Runnable {
         this.server_address = server_address;
         this.port = port;
         try {
-            socket = new Socket(server_address, port);
-            in = new DataInputStream(socket.getInputStream());
-            out = new DataOutputStream(socket.getOutputStream());
-            this.received = new Received(in, answerQueue);
-            this.sender = new Sender(out, sendQueue);
+            this.socket = new Socket(server_address, port);
+            this.received = new Received(new DataInputStream(socket.getInputStream()), answerQueue);
+            this.sender = new Sender(new DataOutputStream(socket.getOutputStream()), sendQueue);
         } catch (IOException e) {
             log.error("Fail connect: ", e);
         }
@@ -53,8 +49,8 @@ public class Network implements Runnable {
 
     public void stop() {
         try {
-            out.close();
-            in.close();
+            sender.close();
+            received.close();
             socket.close();
         } catch (IOException e) {
             log.error("Fail close connection: ", e);
@@ -65,10 +61,10 @@ public class Network implements Runnable {
 class Sender implements Runnable {
     private static final Logger log = Logger.getLogger(Sender.class);
 
-    private final DataOutputStream out;
+    private final OutputStream out;
     private final BlockingQueue<byte[]> sendQueue;
 
-    public Sender(DataOutputStream out, BlockingQueue<byte[]> sendQueue) {
+    public Sender(OutputStream out, BlockingQueue<byte[]> sendQueue) {
         this.out = out;
         this.sendQueue = sendQueue;
     }
@@ -84,15 +80,18 @@ class Sender implements Runnable {
             }
         }
     }
+    public void close() throws IOException {
+        out.close();
+    }
 }
 
 class Received implements Runnable {
     private static final Logger log = Logger.getLogger(Received.class);
 
-    private final DataInputStream in;
+    private final InputStream in;
     private final BlockingQueue<byte[]> answerQueue;
 
-    public Received(final DataInputStream in, final BlockingQueue<byte[]> answerQueue) {
+    public Received(final InputStream in, final BlockingQueue<byte[]> answerQueue) {
         this.in = in;
         this.answerQueue = answerQueue;
     }
@@ -112,5 +111,8 @@ class Received implements Runnable {
         } catch (IOException e) {
             log.error("Fail received message: ", e);
         }
+    }
+    public void close() throws IOException {
+        in.close();
     }
 }
