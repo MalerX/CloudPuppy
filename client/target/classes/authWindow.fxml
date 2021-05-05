@@ -46,7 +46,7 @@
                         <Font size="15.0"/>
                     </font>
                 </PasswordField>
-                <PasswordField fx:id="repeatRegPass" alignment="CENTER" promptText="Повторите пароль"
+                <PasswordField fx:id="retryRegPass" alignment="CENTER" promptText="Повторите пароль"
                                AnchorPane.bottomAnchor="62.0" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="50.0"
                                AnchorPane.topAnchor="125.0">
                     <font>

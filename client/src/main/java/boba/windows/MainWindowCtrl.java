@@ -6,10 +6,19 @@ import javafx.stage.Stage;
 
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.concurrent.BlockingQueue;
 
 public class MainWindowCtrl implements Initializable {
     private Stage mainWindow;
     private String workDir;
+
+    private BlockingQueue<byte[]> outQueue;
+    private BlockingQueue<byte[]> inQueue;
+
+    public void setQueue(BlockingQueue<byte[]> outQueue, BlockingQueue<byte[]> inQueue) {
+        this.outQueue = outQueue;
+        this.inQueue = inQueue;
+    }
 
     public void setMainWindow(Stage mainWindow) {
         this.mainWindow = mainWindow;

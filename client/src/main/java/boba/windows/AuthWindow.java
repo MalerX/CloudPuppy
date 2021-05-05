@@ -4,7 +4,6 @@ import boba.network.Network;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
@@ -15,27 +14,26 @@ import javafx.stage.Stage;
 import org.apache.log4j.Logger;
 
 import java.io.IOException;
-import java.net.URL;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
-import java.util.ResourceBundle;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import static lupa.SignalBytes.*;
 
-public class AuthWindow implements Initializable {
+public class AuthWindow {
     private final static Logger log = Logger.getLogger(AuthWindow.class);
-    private Stage authWindow;
-    private final static int LEN_INT = 4;
     private final static int LEN_SIG_BYTE = 1;
+    private final static int LEN_INT = 4;
+
+    private Stage authWindow;
 
     @FXML
     public TextField serverAddress;
     @FXML
     public TextField workDir;
     @FXML
-    public TextField PORT;
+    public TextField port;
     @FXML
     public Button join;
     @FXML
@@ -51,17 +49,20 @@ public class AuthWindow implements Initializable {
     @FXML
     public PasswordField regPass;
     @FXML
-    public PasswordField repeatRegPass;
+    public PasswordField retryRegPass;
 
-    private Network net;
-    private final BlockingQueue<byte[]> sendQueue = new LinkedBlockingQueue<>();
-    private final BlockingQueue<byte[]> answerQueue = new LinkedBlockingQueue<>();
+    private Network net = null;
+    private final BlockingQueue<byte[]> outQueue = new LinkedBlockingQueue<>();
+    private final BlockingQueue<byte[]> inQueue = new LinkedBlockingQueue<>();
 
     public void setAuthWindow(Stage authWindow) {
         this.authWindow = authWindow;
     }
 
     public void getAuthentication(ActionEvent actionEvent) throws IOException, InterruptedException {
+        if (net == null)
+            connect();
+
         ByteBuffer outMsg = buildAuthData(
                 AUTH,
                 loginField.getText(),
@@ -69,11 +70,11 @@ public class AuthWindow implements Initializable {
 
         if (outMsg == null)
             return;
-        sendQueue.add(outMsg.array());
+        outQueue.add(outMsg.array());
         log.info("Auth data add in queue send.");
         byte[] answer;
 
-        answer = answerQueue.take();
+        answer = inQueue.take();
 
         if (answer[0] == AUTH_OK)
             authOk();
@@ -103,8 +104,11 @@ public class AuthWindow implements Initializable {
     }
 
     public void getRegistration(ActionEvent actionEvent) {
+        if (net == null)
+            connect();
+
         ByteBuffer outMsg = null;
-        if (!regPass.getText().equals(repeatRegPass.getText()))
+        if (!regPass.getText().equals(retryRegPass.getText()))
             notMatchPass();
         else {
             outMsg = buildAuthData(REG, regLogin.getText(), regPass.getText());
@@ -156,10 +160,9 @@ public class AuthWindow implements Initializable {
         log.info("Fail authorization.");
     }
 
-    @Override
-    public void initialize(URL location, ResourceBundle resources) {
-        net = Network.getInstance(serverAddress.getText(), Integer.parseInt(PORT.getText()),
-                sendQueue, answerQueue);
+    public void connect() {
+        net = new Network(serverAddress.getText(), Integer.parseInt(port.getText()),
+                outQueue, inQueue);
         Thread service = new Thread(net);
         service.setDaemon(true);
         service.start();
