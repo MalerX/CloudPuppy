@@ -1,6 +1,5 @@
 package boba.windows;
 
-import boba.network.NettyNetwork;
 import javafx.event.ActionEvent;
 import javafx.fxml.Initializable;
 import javafx.stage.Stage;
