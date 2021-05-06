@@ -72,9 +72,8 @@ public class AuthWindow {
             return;
         outQueue.add(outMsg.array());
         log.info("Auth data add in queue send.");
-        byte[] answer;
 
-        answer = inQueue.take();
+        byte[] answer = inQueue.take();
 
         if (answer[0] == AUTH_OK)
             authOk();
@@ -103,26 +102,54 @@ public class AuthWindow {
         return null;
     }
 
-    public void getRegistration(ActionEvent actionEvent) {
+    public void getRegistration(ActionEvent actionEvent) throws InterruptedException {
         if (net == null)
             connect();
 
-        ByteBuffer outMsg = null;
-        if (!regPass.getText().equals(retryRegPass.getText()))
+        if (!regPass.getText().equals(retryRegPass.getText())) {
             notMatchPass();
-        else {
-            outMsg = buildAuthData(REG, regLogin.getText(), regPass.getText());
+            return;
         }
+        ByteBuffer outMsg = buildAuthData(REG,
+                regLogin.getText(),
+                regPass.getText());
 
-        if (outMsg != null) {
+        if (outMsg == null)
+            return;
+        outQueue.add(outMsg.array());
+        log.info("Registration data add in queue send.");
+        byte[] answer = inQueue.take();
+        log.info("Server response received");
+        if (answer[0] == REG_OK)
+            regOk();
+        if (answer[0] == REG_FAIL)
+            regFail();
+    }
 
-        }
+    private void regFail() {
+        Alert regFail = new Alert(Alert.AlertType.ERROR);
+        regFail.setTitle("Oop...");
+        regFail.setHeaderText("Что-то пошло не так...");
+        regFail.setContentText("Регистрация не выполнена.\n" +
+                "Обратитесь в службу поддержки.");
+        regFail.showAndWait();
+        log.info("Registration fail.");
+    }
+
+    private void regOk() {
+        Alert regOk = new Alert(Alert.AlertType.CONFIRMATION);
+        regOk.setTitle("Ок!");
+        regOk.setHeaderText("Поздравляем!");
+        regOk.setContentText("Регистрация прошла успешно.\n" +
+                "Теперь войдите под своими учётными данными.");
+        regOk.showAndWait();
+        log.info("Registration successfully.");
     }
 
     private void notMatchPass() {
         Alert wrongFormatData = new Alert(Alert.AlertType.WARNING);
         wrongFormatData.setTitle("Не верные данные.");
-        wrongFormatData.setHeaderText("Не допустимый пароль.");
+        wrongFormatData.setHeaderText("Проверьте введённые данные.");
         wrongFormatData.setContentText("Введённые пароли должны совпадать. Повторите ввод.");
         wrongFormatData.showAndWait();
         log.info("The entered passwords do not match");
