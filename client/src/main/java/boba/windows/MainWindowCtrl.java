@@ -10,7 +10,8 @@ import java.util.concurrent.BlockingQueue;
 
 public class MainWindowCtrl implements Initializable {
     private Stage mainWindow;
-    private String workDir;
+    private String currentDir;
+    private String lastDir;
 
     private BlockingQueue<byte[]> outQueue;
     private BlockingQueue<byte[]> inQueue;
@@ -24,8 +25,8 @@ public class MainWindowCtrl implements Initializable {
         this.mainWindow = mainWindow;
     }
 
-    public void setWorkDir(String workDir) {
-        this.workDir = workDir;
+    public void setCurrentDir(String currentDir) {
+        this.currentDir = currentDir;
     }
 
     @Override

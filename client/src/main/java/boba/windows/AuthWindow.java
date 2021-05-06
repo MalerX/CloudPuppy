@@ -132,11 +132,15 @@ public class AuthWindow {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/MainWindow.fxml"));
         Parent root = fxmlLoader.load();
         Stage mainWindow = new Stage();
+
         MainWindowCtrl mainWindowCtrl = fxmlLoader.getController();
         mainWindowCtrl.setMainWindow(mainWindow);
-        mainWindowCtrl.setWorkDir(workDir.getText());
         mainWindow.setScene(new Scene(root));
         mainWindow.setResizable(false);
+
+        mainWindowCtrl.setCurrentDir(workDir.getText());
+        mainWindowCtrl.setQueue(outQueue, inQueue);
+
         authWindow.close();
         mainWindow.show();
         log.info("Success authorization.");
