@@ -73,7 +73,7 @@
                         <Font size="15.0"/>
                     </font>
                 </TextField>
-                <TextField alignment="CENTER" fx:id="workDir" prefHeight="30.0" promptText="User files local directory"
+                <TextField alignment="CENTER" fx:id="rootDir" prefHeight="30.0" promptText="User files local directory"
                            text="data/storage" AnchorPane.bottomAnchor="67.0" AnchorPane.leftAnchor="40.0"
                            AnchorPane.rightAnchor="40.0" AnchorPane.topAnchor="120.0">
                     <font>
