@@ -11,7 +11,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
-import lupa.Navigator;
 import org.apache.log4j.Logger;
 
 import java.io.IOException;
@@ -24,15 +23,13 @@ import static lupa.SignalBytes.*;
 
 public class AuthWindow {
     private final static Logger log = Logger.getLogger(AuthWindow.class);
-    private final static int LEN_SIG_BYTE = 1;
-    private final static int LEN_INT = 4;
 
     private Stage authWindow;
 
     @FXML
     public TextField serverAddress;
     @FXML
-    public TextField workDir;
+    public TextField rootDir;
     @FXML
     public TextField port;
     @FXML
@@ -87,16 +84,16 @@ public class AuthWindow {
         if (login.contains(" ") || password.contains(" "))
             ContainsSpace();
         else {
-            ByteBuffer result = ByteBuffer.allocate(LEN_SIG_BYTE
-                    + LEN_INT
+            ByteBuffer result = ByteBuffer.allocate(LENGTH_SIG_BYTE
+                    + LENGTH_INT
                     + login.getBytes(StandardCharsets.UTF_8).length
-                    + LEN_INT
+                    + LENGTH_INT
                     + password.getBytes(StandardCharsets.UTF_8).length
             );
             return result.put(signal)
-                    .put(ByteBuffer.allocate(LEN_INT).putInt(login.length()).array())
+                    .put(ByteBuffer.allocate(LENGTH_INT).putInt(login.length()).array())
                     .put(login.getBytes(StandardCharsets.UTF_8))
-                    .put(ByteBuffer.allocate(LEN_INT).putInt(password.length()).array())
+                    .put(ByteBuffer.allocate(LENGTH_INT).putInt(password.length()).array())
                     .put(password.getBytes(StandardCharsets.UTF_8))
                     .flip();
         }
@@ -164,10 +161,12 @@ public class AuthWindow {
         MainWindowCtrl mainWindowCtrl = fxmlLoader.getController();
         mainWindowCtrl.setMainWindow(mainWindow);
         mainWindow.setScene(new Scene(root));
+        mainWindow.setTitle("Cloud Puppy");
         mainWindow.setResizable(false);
 
-        mainWindowCtrl.setNavigator(new Navigator(workDir.getText()));
+        mainWindowCtrl.setRootDir(rootDir.getText());
         mainWindowCtrl.setQueue(outQueue, inQueue);
+        mainWindowCtrl.refresh();
 
         authWindow.close();
         mainWindow.show();
