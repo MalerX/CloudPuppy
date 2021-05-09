@@ -11,6 +11,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+import lupa.Navigator;
 import org.apache.log4j.Logger;
 
 import java.io.IOException;
@@ -165,7 +166,7 @@ public class AuthWindow {
         mainWindow.setScene(new Scene(root));
         mainWindow.setResizable(false);
 
-        mainWindowCtrl.setCurrentDir(workDir.getText());
+        mainWindowCtrl.setNavigator(new Navigator(workDir.getText()));
         mainWindowCtrl.setQueue(outQueue, inQueue);
 
         authWindow.close();

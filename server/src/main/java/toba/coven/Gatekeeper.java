@@ -4,6 +4,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
+import lupa.Navigator;
 import org.apache.log4j.Logger;
 
 import static lupa.SignalBytes.AUTH_FAIL;
@@ -12,8 +13,8 @@ import static lupa.SignalBytes.AUTH_OK;
 public class Gatekeeper extends ChannelInboundHandlerAdapter {
     private static final Logger log = Logger.getLogger(Gatekeeper.class);
     private boolean auth = false;
-    private String homeDir = "storage/";
-    private String login;
+    private final String HOME_DIR = "storage/";
+    private WorkerJack jack;
 
 
     public Gatekeeper() {
@@ -36,18 +37,10 @@ public class Gatekeeper extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-        if (!auth)
+        if (auth) {
+            jack.work(ctx, msg);
+        } else {
             ctx.writeAndFlush(getAuth(msg));
-        else {
-            ByteBuf buf = ((ByteBuf) msg);
-            byte[] msgIn = new byte[buf.readableBytes()];
-            buf.readBytes(msgIn);
-            byte[] out = new byte[msgIn.length];
-            int k = msgIn.length - 1;
-            for (int i = 0; i < msgIn.length; i++) {
-                out[k--] = msgIn[i];
-            }
-            ctx.writeAndFlush(Unpooled.wrappedBuffer(out));
         }
     }
 
@@ -57,9 +50,8 @@ public class Gatekeeper extends ChannelInboundHandlerAdapter {
         switch (resultByte) {
             case AUTH_OK -> {
                 auth = true;
-                login = arch.getLogin();
-                homeDir += login;
-                log.info(String.format("Authentication successful. User: %s", login));
+                jack = new WorkerJack(new Navigator(HOME_DIR + arch.getLogin()));
+                log.info(String.format("Authentication successful. User: %s", arch.getLogin()));
             }
             case AUTH_FAIL -> log.info("Authentication fail.");
         }
