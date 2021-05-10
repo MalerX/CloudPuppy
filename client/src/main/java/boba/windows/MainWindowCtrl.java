@@ -144,21 +144,21 @@ public class MainWindowCtrl {
     }
 
     public void mkDirCloud(ActionEvent actionEvent) {
-        byte[] requestMkdir = buildName(
-                MKDIR,
-                getNameNewDir());
+        String nameDir = getNameNewDir();
+        byte[] requestMkdir = buildName(MKDIR, nameDir);
         outQueue.add(requestMkdir);
         log.info("A request has been sent to create a directory.");
         refreshCL();
     }
 
     private byte[] buildName(byte signal, String name) {
+        byte[] nameByte = name.getBytes(StandardCharsets.UTF_8);
         ByteBuffer request = ByteBuffer.allocate(LENGTH_SIG_BYTE
                 + LENGTH_INT
-                + name.length());
+                + nameByte.length);
         request.put(signal)
-                .put(ByteBuffer.allocate(LENGTH_INT).putInt(name.length()).array())
-                .put(name.getBytes(StandardCharsets.UTF_8))
+                .put(ByteBuffer.allocate(LENGTH_INT).putInt(nameByte.length).array())
+                .put(nameByte)
                 .flip();
         return request.array();
     }
@@ -170,9 +170,8 @@ public class MainWindowCtrl {
     }
 
     public void joinCloudDir(ActionEvent actionEvent) {
-        byte[] requestJoinDir = buildName(
-                JOIN,
-                cloudFiles.getSelectionModel().getSelectedItem());
+        String nameDir = cloudFiles.getSelectionModel().getSelectedItem();
+        byte[] requestJoinDir = buildName(JOIN, nameDir);
         outQueue.add(requestJoinDir);
         log.info("The request to switch to the directory has been sent.");
         refreshCL();

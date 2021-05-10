@@ -13,11 +13,10 @@ public final class SignalBytes {
     public static final byte UPLOAD = 17;
     public static final byte DOWNLOAD = 19;
     public static final byte MKDIR = 23;
-    public static final byte LS = 29;
+    public static final byte UP = 29;
     public static final byte RM = 31;
     public static final byte JOIN = 37;
     public static final byte BACK = 41;
-    public static final byte UP = 43;
-    public static final byte REFRESH = 47;
-    public static final byte ERR = 53;
+    public static final byte REFRESH = 43;
+    public static final byte ERR = 47;
 }

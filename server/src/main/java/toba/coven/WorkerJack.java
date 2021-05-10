@@ -42,8 +42,7 @@ public class WorkerJack {
             }
             case MKDIR -> {
                 log.info("Request to create folder received.");
-                String nameDir = getName(inBuff);
-                navigator.mkDir(nameDir);
+                navigator.mkDir(getName(inBuff));
             }
             case BACK -> {
                 log.info("Request received to return to the previous directory.");
@@ -51,8 +50,15 @@ public class WorkerJack {
             }
             case JOIN -> {
                 log.info("A request was received to move to a directory.");
-                String nameDir = getName(inBuff);
-                navigator.joinDir(nameDir);
+                navigator.joinDir(getName(inBuff));
+            }
+            case UP -> {
+                log.info("A request was received to navigate to the parent directory.");
+                navigator.upDir();
+            }
+            case RM -> {
+                log.info("A request was received to delete an item.");
+                navigator.rmItem(getName(inBuff));
             }
         }
     }
