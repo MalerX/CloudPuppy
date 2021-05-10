@@ -15,7 +15,7 @@ public final class SignalBytes {
     public static final byte MKDIR = 23;
     public static final byte LS = 29;
     public static final byte RM = 31;
-    public static final byte FORWARD = 37;
+    public static final byte JOIN = 37;
     public static final byte BACK = 41;
     public static final byte UP = 43;
     public static final byte REFRESH = 47;

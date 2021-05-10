@@ -11,6 +11,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+import lupa.Navigator;
 import org.apache.log4j.Logger;
 
 import java.io.IOException;
@@ -164,9 +165,8 @@ public class AuthWindow {
         mainWindow.setTitle("Cloud Puppy");
         mainWindow.setResizable(false);
 
-        mainWindowCtrl.setRootDir(rootDir.getText());
+        mainWindowCtrl.setNavigator(new Navigator(rootDir.getText()));
         mainWindowCtrl.setQueue(outQueue, inQueue);
-        mainWindowCtrl.refresh();
 
         authWindow.close();
         mainWindow.show();

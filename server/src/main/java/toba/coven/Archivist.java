@@ -2,6 +2,7 @@ package toba.coven;
 
 import io.netty.buffer.ByteBuf;
 import javafx.util.Pair;
+import lupa.SignalBytes;
 import org.apache.log4j.Logger;
 
 import java.io.ByteArrayInputStream;
@@ -12,7 +13,6 @@ import java.sql.*;
 import static lupa.SignalBytes.*;
 
 public class Archivist {
-    private static final int LEN_INT = 4;
 
     private static final Logger log = Logger.getLogger(Archivist.class);
     private String login;
@@ -95,7 +95,7 @@ public class Archivist {
     }
 
     private Pair<String, String> getLoginPassword(ByteBuffer buff) throws IOException {
-        byte[] tmpByteArray = new byte[LEN_INT];
+        byte[] tmpByteArray = new byte[LENGTH_INT];
 
         buff.get(tmpByteArray);
         byte[] loginInByte = new byte[ByteBuffer.wrap(tmpByteArray).getInt()];

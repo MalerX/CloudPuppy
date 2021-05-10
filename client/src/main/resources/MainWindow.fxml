@@ -24,7 +24,8 @@
     <ButtonBar buttonMinWidth="32.0" prefHeight="32.0" prefWidth="270.0" AnchorPane.leftAnchor="10.0"
                AnchorPane.rightAnchor="320.0" AnchorPane.topAnchor="40.0">
         <buttons>
-            <Button fx:id="backLocalBtn" mnemonicParsing="false" onAction="#backLocal" prefHeight="32.0" prefWidth="32.0"
+            <Button fx:id="backLocalBtn" mnemonicParsing="false" onAction="#backLocal" prefHeight="32.0"
+                    prefWidth="32.0"
                     translateX="-28.0">
                 <graphic>
                     <ImageView fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">
@@ -32,7 +33,8 @@
                     </ImageView>
                 </graphic>
             </Button>
-            <Button fx:id="forwardLocalBtn" layoutX="248.0" layoutY="10.0" mnemonicParsing="false" onAction="#joinLocalDir"
+            <Button fx:id="joinLocalBtn" layoutX="248.0" layoutY="10.0" mnemonicParsing="false"
+                    onAction="#joinLocalDir"
                     prefHeight="32.0" prefWidth="32.0" translateX="-28.0">
                 <graphic>
                     <ImageView fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">
@@ -48,7 +50,8 @@
                     </ImageView>
                 </graphic>
             </Button>
-            <Button fx:id="refreshLocalBtn" layoutX="248.0" layoutY="10.0" mnemonicParsing="false" onAction="#refreshLocal"
+            <Button fx:id="refreshLocalBtn" layoutX="248.0" layoutY="10.0" mnemonicParsing="false"
+                    onAction="#refreshLocal"
                     prefHeight="32.0" prefWidth="32.0" translateX="-28.0">
                 <graphic>
                     <ImageView fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">
@@ -79,15 +82,16 @@
     <ButtonBar buttonMinWidth="32.0" layoutX="20.0" layoutY="50.0" prefHeight="32.0" prefWidth="270.0"
                AnchorPane.leftAnchor="320.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="40.0">
         <buttons>
-            <Button fx:id="backCloudBtn" mnemonicParsing="false" prefHeight="32.0" prefWidth="32.0" translateX="-19.0">
+            <Button fx:id="backCloudBtn" mnemonicParsing="false" prefHeight="32.0" prefWidth="32.0" translateX="-19.0"
+            onAction="#backCloud">
                 <graphic>
                     <ImageView fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">
                         <Image url="@ico/draw-arrow-back.png"/>
                     </ImageView>
                 </graphic>
             </Button>
-            <Button fx:id="forwardCloudBtn" layoutX="248.0" layoutY="10.0" mnemonicParsing="false" prefHeight="32.0"
-                    prefWidth="32.0" translateX="-19.0">
+            <Button fx:id="joinCloudBtn" layoutX="248.0" layoutY="10.0" mnemonicParsing="false" prefHeight="32.0"
+                    prefWidth="32.0" translateX="-19.0" onAction="#joinCloudDir">
                 <graphic>
                     <ImageView fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">
                         <Image url="@ico/draw-arrow-down.png"/>

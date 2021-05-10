@@ -23,3 +23,6 @@
 hs_err_pid*
 /data/CLOUDPUPPY.users.db
 /data/CLOUDPUPPY.users.db.back
+/client/src/main/resources/ico/draw-arrow-down.png
+/client/target/classes/ico/draw-arrow-down.png
+/data/storage/*

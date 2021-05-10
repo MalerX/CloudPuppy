@@ -9,8 +9,7 @@ import org.apache.log4j.Logger;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 
-import static lupa.SignalBytes.MKDIR;
-import static lupa.SignalBytes.REFRESH;
+import static lupa.SignalBytes.*;
 
 public class WorkerJack {
     private static final Logger log = Logger.getLogger(WorkerJack.class);
@@ -26,7 +25,7 @@ public class WorkerJack {
         byte signal = inBuff.get();
 
         switch (signal) {
-            case REFRESH: {
+            case REFRESH -> {
                 log.info("Request received refresh.");
                 String tmpStr = navigator.refresh();
 
@@ -41,9 +40,28 @@ public class WorkerJack {
                 ctx.writeAndFlush(Unpooled.wrappedBuffer(
                         tmpStr.getBytes(StandardCharsets.UTF_8)));
             }
-            case MKDIR: {
-                navigator.mkDir(new String(inBuff.array()));
+            case MKDIR -> {
+                log.info("Request to create folder received.");
+                String nameDir = getName(inBuff);
+                navigator.mkDir(nameDir);
+            }
+            case BACK -> {
+                log.info("Request received to return to the previous directory.");
+                navigator.back();
+            }
+            case JOIN -> {
+                log.info("A request was received to move to a directory.");
+                String nameDir = getName(inBuff);
+                navigator.joinDir(nameDir);
             }
         }
+    }
+
+    private String getName(ByteBuffer inBuff) {
+        byte[] tmpByteArray = new byte[LENGTH_INT];
+        inBuff.get(tmpByteArray);
+        byte[] nameDirInByte = new byte[ByteBuffer.wrap(tmpByteArray).getInt()];
+        inBuff.get(nameDirInByte);
+        return new String(nameDirInByte);
     }
 }

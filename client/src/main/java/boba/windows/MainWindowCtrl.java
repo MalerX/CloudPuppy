@@ -17,7 +17,7 @@ import java.util.Optional;
 import java.util.concurrent.BlockingQueue;
 
 import static lupa.Navigator.DELIMETR;
-import static lupa.SignalBytes.REFRESH;
+import static lupa.SignalBytes.*;
 
 public class MainWindowCtrl {
     private static final Logger log = Logger.getLogger(MainWindowCtrl.class);
@@ -29,7 +29,7 @@ public class MainWindowCtrl {
     @FXML
     public Button mkdirLocalBtn;
     @FXML
-    public Button forwardLocalBtn;
+    public Button joinLocalBtn;
     @FXML
     public Button upDirLocalBtn;
     @FXML
@@ -42,6 +42,10 @@ public class MainWindowCtrl {
     public ListView<String> cloudFiles;
     @FXML
     public Button mkdirCloudBtn;
+    @FXML
+    public Button backCloudBtn;
+    @FXML
+    public Button joinCloudBtn;
 
     private Stage mainWindow;
 
@@ -140,9 +144,37 @@ public class MainWindowCtrl {
     }
 
     public void mkDirCloud(ActionEvent actionEvent) {
-        String newDirName = getNameNewDir();
-        ByteBuffer buffer = ByteBuffer.allocate(SignalBytes.)
-        outQueue.add();
+        byte[] requestMkdir = buildName(
+                MKDIR,
+                getNameNewDir());
+        outQueue.add(requestMkdir);
+        log.info("A request has been sent to create a directory.");
+        refreshCL();
+    }
+
+    private byte[] buildName(byte signal, String name) {
+        ByteBuffer request = ByteBuffer.allocate(LENGTH_SIG_BYTE
+                + LENGTH_INT
+                + name.length());
+        request.put(signal)
+                .put(ByteBuffer.allocate(LENGTH_INT).putInt(name.length()).array())
+                .put(name.getBytes(StandardCharsets.UTF_8))
+                .flip();
+        return request.array();
+    }
+
+    public void backCloud(ActionEvent actionEvent) {
+        outQueue.add(new byte[]{BACK});
+        log.info("A request to return to the previous directory has been sent.");
+        refreshCL();
+    }
+
+    public void joinCloudDir(ActionEvent actionEvent) {
+        byte[] requestJoinDir = buildName(
+                JOIN,
+                cloudFiles.getSelectionModel().getSelectedItem());
+        outQueue.add(requestJoinDir);
+        log.info("The request to switch to the directory has been sent.");
         refreshCL();
     }
 }
