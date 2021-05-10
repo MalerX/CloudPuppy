@@ -35,7 +35,7 @@ public class MainWindowCtrl {
     @FXML
     public Button backLocalBtn;
     @FXML
-    public Button rmDirLocalBtn;
+    public Button rmItemLocalBtn;
     @FXML
     public Button refreshCloudBtn;
     @FXML
@@ -46,6 +46,10 @@ public class MainWindowCtrl {
     public Button backCloudBtn;
     @FXML
     public Button joinCloudBtn;
+    @FXML
+    public Button upDirCloudBtn;
+    @FXML
+    public Button rmItemCloudBtn;
 
     private Stage mainWindow;
 
@@ -62,6 +66,7 @@ public class MainWindowCtrl {
     public void setNavigator(Navigator navigator) {
         this.navigator = navigator;
         refreshLC();
+        refreshCL();
     }
 
     public void setMainWindow(Stage mainWindow) {
@@ -174,6 +179,20 @@ public class MainWindowCtrl {
         byte[] requestJoinDir = buildName(JOIN, nameDir);
         outQueue.add(requestJoinDir);
         log.info("The request to switch to the directory has been sent.");
+        refreshCL();
+    }
+
+    public void udDirCloud(ActionEvent actionEvent) {
+        outQueue.add(new byte[]{UP});
+        log.info("A request was sent to switch to the parent directory.");
+        refreshCL();
+    }
+
+    public void rmCloudItem(ActionEvent actionEvent) {
+        String nameItem = cloudFiles.getSelectionModel().getSelectedItem();
+        byte[] requestRmItem = buildName(RM, nameItem);
+        outQueue.add(requestRmItem);
+        log.info("A request was sent to delete an item.");
         refreshCL();
     }
 }

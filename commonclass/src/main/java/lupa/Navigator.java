@@ -66,11 +66,14 @@ public class Navigator {
     }
 
     public void back() {
-        File tmpFile = lastDir;
-        lastDir = currentDir;
-        currentDir = tmpFile;
-        log.info(String.format("Directory change from %s to %s is done",
-                lastDir.getName(), currentDir.getName()));
+        if (lastDir.exists()) {
+            File tmpFile = lastDir;
+            lastDir = currentDir;
+            currentDir = tmpFile;
+            log.info(String.format("Directory change from %s to %s is done",
+                    lastDir.getName(), currentDir.getName()));
+        } else
+            log.info("The requested directory does not exist or has been deleted.");
     }
 
     public void joinDir(String nameDir) {
