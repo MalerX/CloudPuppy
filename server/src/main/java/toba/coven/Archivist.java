@@ -4,8 +4,10 @@ import io.netty.buffer.ByteBuf;
 import javafx.util.Pair;
 import org.apache.log4j.Logger;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.nio.file.Paths;
 import java.sql.*;
 
 import static lupa.SignalBytes.*;
@@ -19,6 +21,10 @@ public class Archivist {
 
     public Archivist() {
         try {
+            if (!new File("data").exists()) {
+                new File("data").mkdir();
+                log.info("Create directory 'data'.");
+            }
             Class.forName("org.sqlite.JDBC");
             this.connection = DriverManager.getConnection("jdbc:sqlite:data/CLOUDPUPPY.users.db");
             connection.prepareStatement(
