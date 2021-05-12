@@ -3,6 +3,7 @@ package toba.coven;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
+import io.netty.handler.stream.ChunkedFile;
 import lupa.Navigator;
 import org.apache.log4j.Logger;
 
