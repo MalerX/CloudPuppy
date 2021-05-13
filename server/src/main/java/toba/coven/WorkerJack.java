@@ -4,6 +4,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.stream.ChunkedFile;
+import lupa.INavigate;
 import lupa.Navigator;
 import org.apache.log4j.Logger;
 
@@ -16,9 +17,9 @@ import static lupa.SignalBytes.*;
 
 public class WorkerJack {
     private static final Logger log = Logger.getLogger(WorkerJack.class);
-    private final Navigator navigator;
+    private final INavigate navigator;
 
-    public WorkerJack(Navigator navigator) {
+    public WorkerJack(INavigate navigator) {
         this.navigator = navigator;
     }
 

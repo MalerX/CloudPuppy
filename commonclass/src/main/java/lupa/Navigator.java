@@ -10,7 +10,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
-public class Navigator {
+public class Navigator implements INavigate{
     private static final Logger log = Logger.getLogger(Navigator.class);
     public static final String DELIMITER = "Hz784kj'''wf8d3";        //TODO Подобрать делимитер получше.
 
@@ -110,8 +110,12 @@ public class Navigator {
         } else
             log.info(String.format("Removing item %s fail.", item));
     }
+
     public byte[] sendFile(Paths file) {
+        return null;
+    }
+
+    public void receivedFile() {
 
     }
-    public void receivedFile()
 }

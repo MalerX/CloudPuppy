@@ -7,6 +7,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextInputDialog;
 import javafx.stage.Stage;
+import lupa.INavigate;
 import lupa.Navigator;
 import org.apache.log4j.Logger;
 
@@ -52,7 +53,7 @@ public class MainWindowCtrl {
 
     private Stage mainWindow;
 
-    private Navigator navigator;
+    private INavigate navigator;
 
     private BlockingQueue<byte[]> outQueue;
     private BlockingQueue<byte[]> inQueue;
@@ -62,7 +63,7 @@ public class MainWindowCtrl {
         this.inQueue = inQueue;
     }
 
-    public void setNavigator(Navigator navigator) {
+    public void setNavigator(INavigate navigator) {
         this.navigator = navigator;
         refreshLC();
         refreshCL();
