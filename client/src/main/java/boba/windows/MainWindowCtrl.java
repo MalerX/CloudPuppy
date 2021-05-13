@@ -8,7 +8,6 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.TextInputDialog;
 import javafx.stage.Stage;
 import lupa.Navigator;
-import lupa.SignalBytes;
 import org.apache.log4j.Logger;
 
 import java.nio.ByteBuffer;
@@ -16,7 +15,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 import java.util.concurrent.BlockingQueue;
 
-import static lupa.Navigator.DELIMETR;
+import static lupa.Navigator.DELIMITER;
 import static lupa.SignalBytes.*;
 
 public class MainWindowCtrl {
@@ -80,7 +79,7 @@ public class MainWindowCtrl {
     private void refreshLC() {
         Platform.runLater(() -> {
             localFiles.getItems().clear();
-            String[] inLocalDir = navigator.refresh().split(DELIMETR);
+            String[] inLocalDir = navigator.refresh().split(DELIMITER);
             for (String str :
                     inLocalDir) {
                 localFiles.getItems().add(str);
@@ -137,7 +136,7 @@ public class MainWindowCtrl {
                 log.error("Error read inQueue.");
             }
             if (answer != null) {
-                String[] inCloudDir = new String(answer).split(DELIMETR);
+                String[] inCloudDir = new String(answer).split(DELIMITER);
                 cloudFiles.getItems().clear();
                 for (String str :
                         inCloudDir) {

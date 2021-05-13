@@ -12,7 +12,7 @@ import java.util.Objects;
 
 public class Navigator {
     private static final Logger log = Logger.getLogger(Navigator.class);
-    public static final String DELIMETR = "Hz784kj'''wf8d3";        //TODO Подобрать делимитер получше.
+    public static final String DELIMITER = "Hz784kj'''wf8d3";        //TODO Подобрать делимитер получше.
 
     private final File root;
     private File currentDir;
@@ -39,13 +39,13 @@ public class Navigator {
             return 0;
         });
 
-        StringBuilder result = new StringBuilder(currentDir.getPath()).append(DELIMETR);
+        StringBuilder result = new StringBuilder(currentDir.getPath()).append(DELIMITER);
 
         for (File o :
                 filesInCurrDir) {
-            result.append(o.getName()).append(DELIMETR);
+            result.append(o.getName()).append(DELIMITER);
         }
-        return result.substring(0, result.length() - DELIMETR.length());
+        return result.substring(0, result.length() - DELIMITER.length());
     }
 
     public void mkDir(String nameDir) {
@@ -110,4 +110,8 @@ public class Navigator {
         } else
             log.info(String.format("Removing item %s fail.", item));
     }
+    public byte[] sendFile(Paths file) {
+
+    }
+    public void receivedFile()
 }

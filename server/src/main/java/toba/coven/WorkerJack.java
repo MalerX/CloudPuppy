@@ -7,6 +7,8 @@ import io.netty.handler.stream.ChunkedFile;
 import lupa.Navigator;
 import org.apache.log4j.Logger;
 
+import javax.management.openmbean.OpenMBeanAttributeInfo;
+import javax.management.openmbean.OpenMBeanAttributeInfoSupport;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 
@@ -21,25 +23,18 @@ public class WorkerJack {
     }
 
     public void work(ChannelHandlerContext ctx, Object msg) {
-        ByteBuf buff = (ByteBuf) msg;
-        ByteBuffer inBuff = buff.nioBuffer();
+        /* Класс собирающий входящие ByteBuf в один ByteBuffer
+           разработать единый протокол.
+         */
+        ByteBuffer inBuff = ((ByteBuf) msg).nioBuffer();
         byte signal = inBuff.get();
 
         switch (signal) {
             case REFRESH -> {
                 log.info("Request received refresh.");
-                String tmpStr = navigator.refresh();
-
-//                ByteBuffer result = ByteBuffer.allocate(LENGTH_SIG_BYTE
-//                        + LENGTH_INT
-//                        + tmpStr.length());
-//                result.put(REFRESH)
-//                        .put(ByteBuffer.allocate(LENGTH_INT).putInt(tmpStr.length()).array())
-//                        .put(tmpStr.getBytes(StandardCharsets.UTF_8))
-//                        .flip();
-//                ctx.writeAndFlush(result.array());
                 ctx.writeAndFlush(Unpooled.wrappedBuffer(
-                        tmpStr.getBytes(StandardCharsets.UTF_8)));
+                        navigator.refresh()
+                                .getBytes(StandardCharsets.UTF_8)));
             }
             case MKDIR -> {
                 log.info("Request to create folder received.");

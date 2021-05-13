@@ -7,17 +7,23 @@ import io.netty.channel.ChannelInboundHandlerAdapter;
 import lupa.Navigator;
 import org.apache.log4j.Logger;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.nio.ByteBuffer;
+import java.nio.channels.ByteChannel;
+
 import static lupa.SignalBytes.AUTH_FAIL;
 import static lupa.SignalBytes.AUTH_OK;
 
 public class Gatekeeper extends ChannelInboundHandlerAdapter {
     private static final Logger log = Logger.getLogger(Gatekeeper.class);
     private boolean auth = false;
-    private final String HOME_DIR = "storage/";
+    private final String HOME_DIR;
     private WorkerJack jack;
 
 
-    public Gatekeeper() {
+    public Gatekeeper(String dir) {
+        this.HOME_DIR = dir;
     }
 
     @Override
