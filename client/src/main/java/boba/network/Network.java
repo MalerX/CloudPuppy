@@ -2,8 +2,12 @@ package boba.network;
 
 import org.apache.log4j.Logger;
 
-import java.io.*;
+import java.io.ByteArrayOutputStream;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
 import java.net.Socket;
+import java.nio.ByteBuffer;
 import java.util.concurrent.BlockingQueue;
 
 public class Network implements Runnable {
@@ -14,7 +18,7 @@ public class Network implements Runnable {
     private Received received;
 
     public Network(String server_address, int port,
-                   BlockingQueue<byte[]> outQueue, BlockingQueue<byte[]> inQueue) {
+                   BlockingQueue<ByteBuffer> outQueue, BlockingQueue<ByteBuffer> inQueue) {
         try {
             this.socket = new Socket(server_address, port);
             this.received = new Received(new DataInputStream(socket.getInputStream()), inQueue);
@@ -44,23 +48,23 @@ public class Network implements Runnable {
 class Sender implements Runnable {
     private static final Logger log = Logger.getLogger(Sender.class);
 
-    private final OutputStream out;
-    private final BlockingQueue<byte[]> outQueue;
+    private final DataOutputStream out;
+    private final BlockingQueue<ByteBuffer> outQueue;
 
-    public Sender(OutputStream out, BlockingQueue<byte[]> outQueue) {
+    public Sender(final DataOutputStream out, BlockingQueue<ByteBuffer> outQueue) {
         this.out = out;
         this.outQueue = outQueue;
     }
 
     @Override
     public void run() {
-        while (true) {
-            try {
-                out.write(outQueue.take());
+        try {
+            while (true) {
+                out.write(outQueue.take().array());
                 log.info("Message send.");
-            } catch (IOException | InterruptedException e) {
-                log.error("Fail send message: ", e);
             }
+        } catch (IOException | InterruptedException e) {
+            log.error("Fail send message: ", e);
         }
     }
 
@@ -71,11 +75,12 @@ class Sender implements Runnable {
 
 class Received implements Runnable {
     private static final Logger log = Logger.getLogger(Received.class);
+    private static final int ONE_KB = 1024;
 
-    private final InputStream in;
-    private final BlockingQueue<byte[]> inQueue;
+    private final DataInputStream in;
+    private final BlockingQueue<ByteBuffer> inQueue;
 
-    public Received(final InputStream in, final BlockingQueue<byte[]> inQueue) {
+    public Received(final DataInputStream in, final BlockingQueue<ByteBuffer> inQueue) {
         this.in = in;
         this.inQueue = inQueue;
     }
@@ -88,7 +93,7 @@ class Received implements Runnable {
                 if (msgLen != 0) {
                     byte[] msg = new byte[msgLen];
                     in.read(msg);
-                    inQueue.add(msg);
+                    inQueue.add(ByteBuffer.wrap(msg));
                     log.info("Received message.");
                 }
             }

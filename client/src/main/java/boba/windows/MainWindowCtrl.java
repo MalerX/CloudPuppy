@@ -55,10 +55,10 @@ public class MainWindowCtrl {
 
     private INavigate navigator;
 
-    private BlockingQueue<byte[]> outQueue;
-    private BlockingQueue<byte[]> inQueue;
+    private BlockingQueue<ByteBuffer> outQueue;
+    private BlockingQueue<ByteBuffer> inQueue;
 
-    public void setQueue(BlockingQueue<byte[]> outQueue, BlockingQueue<byte[]> inQueue) {
+    public void setQueue(BlockingQueue<ByteBuffer> outQueue, BlockingQueue<ByteBuffer> inQueue) {
         this.outQueue = outQueue;
         this.inQueue = inQueue;
     }
@@ -129,15 +129,15 @@ public class MainWindowCtrl {
 
     private void refreshCL() {
         Platform.runLater(() -> {
-            byte[] answer = null;
-            outQueue.add(new byte[]{REFRESH});
+            ByteBuffer answer = null;
+            outQueue.add(ByteBuffer.wrap(new byte[]{REFRESH}));
             try {
                 answer = inQueue.take();
             } catch (InterruptedException e) {
                 log.error("Error read inQueue.");
             }
             if (answer != null) {
-                String[] inCloudDir = new String(answer).split(DELIMITER);
+                String[] inCloudDir = new String(answer.array()).split(DELIMITER);
                 cloudFiles.getItems().clear();
                 for (String str :
                         inCloudDir) {
@@ -150,13 +150,43 @@ public class MainWindowCtrl {
 
     public void mkDirCloud(ActionEvent actionEvent) {
         String nameDir = getNameNewDir();
-        byte[] requestMkdir = buildName(MKDIR, nameDir);
+        ByteBuffer requestMkdir = buildName(MKDIR, nameDir);
         outQueue.add(requestMkdir);
         log.info("A request has been sent to create a directory.");
         refreshCL();
     }
 
-    private byte[] buildName(byte signal, String name) {
+    public void backCloud(ActionEvent actionEvent) {
+        outQueue.add(ByteBuffer.wrap(
+                new byte[]{BACK}));
+        log.info("A request to return to the previous directory has been sent.");
+        refreshCL();
+    }
+
+    public void joinCloudDir(ActionEvent actionEvent) {
+        String nameDir = cloudFiles.getSelectionModel().getSelectedItem();
+        ByteBuffer requestJoinDir = buildName(JOIN, nameDir);
+        outQueue.add(requestJoinDir);
+        log.info("The request to switch to the directory has been sent.");
+        refreshCL();
+    }
+
+    public void udDirCloud(ActionEvent actionEvent) {
+        outQueue.add(ByteBuffer.wrap(
+                new byte[]{UP}));
+        log.info("A request was sent to switch to the parent directory.");
+        refreshCL();
+    }
+
+    public void rmCloudItem(ActionEvent actionEvent) {
+        String nameItem = cloudFiles.getSelectionModel().getSelectedItem();
+        ByteBuffer requestRmItem = buildName(RM, nameItem);
+        outQueue.add(requestRmItem);
+        log.info("A request was sent to delete an item.");
+        refreshCL();
+    }
+
+    private ByteBuffer buildName(byte signal, String name) {
         byte[] nameByte = name.getBytes(StandardCharsets.UTF_8);
         ByteBuffer request = ByteBuffer.allocate(LENGTH_SIG_BYTE
                 + LENGTH_INT
@@ -165,34 +195,6 @@ public class MainWindowCtrl {
                 .put(ByteBuffer.allocate(LENGTH_INT).putInt(nameByte.length).array())
                 .put(nameByte)
                 .flip();
-        return request.array();
-    }
-
-    public void backCloud(ActionEvent actionEvent) {
-        outQueue.add(new byte[]{BACK});
-        log.info("A request to return to the previous directory has been sent.");
-        refreshCL();
-    }
-
-    public void joinCloudDir(ActionEvent actionEvent) {
-        String nameDir = cloudFiles.getSelectionModel().getSelectedItem();
-        byte[] requestJoinDir = buildName(JOIN, nameDir);
-        outQueue.add(requestJoinDir);
-        log.info("The request to switch to the directory has been sent.");
-        refreshCL();
-    }
-
-    public void udDirCloud(ActionEvent actionEvent) {
-        outQueue.add(new byte[]{UP});
-        log.info("A request was sent to switch to the parent directory.");
-        refreshCL();
-    }
-
-    public void rmCloudItem(ActionEvent actionEvent) {
-        String nameItem = cloudFiles.getSelectionModel().getSelectedItem();
-        byte[] requestRmItem = buildName(RM, nameItem);
-        outQueue.add(requestRmItem);
-        log.info("A request was sent to delete an item.");
-        refreshCL();
+        return request;
     }
 }

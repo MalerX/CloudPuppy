@@ -51,8 +51,8 @@ public class AuthWindow {
     public PasswordField retryRegPass;
 
     private Network net = null;
-    private final BlockingQueue<byte[]> outQueue = new LinkedBlockingQueue<>();
-    private final BlockingQueue<byte[]> inQueue = new LinkedBlockingQueue<>();
+    private final BlockingQueue<ByteBuffer> outQueue = new LinkedBlockingQueue<>();
+    private final BlockingQueue<ByteBuffer> inQueue = new LinkedBlockingQueue<>();
 
     public void setAuthWindow(Stage authWindow) {
         this.authWindow = authWindow;
@@ -69,15 +69,16 @@ public class AuthWindow {
 
         if (outMsg == null)
             return;
-        outQueue.add(outMsg.array());
+        outQueue.add(outMsg);
         log.info("Auth data add in queue send.");
 
-        byte[] answer = inQueue.take();
+         ByteBuffer answer = inQueue.take();
+         byte signal = answer.get();
 
-        if (answer[0] == AUTH_OK)
+        if (signal == AUTH_OK)
             authOk();
 
-        if (answer[0] == AUTH_FAIL)
+        if (signal == AUTH_FAIL)
             errorAuth();
     }
 
@@ -115,13 +116,14 @@ public class AuthWindow {
 
         if (outMsg == null)
             return;
-        outQueue.add(outMsg.array());
+        outQueue.add(outMsg);
         log.info("Registration data add in queue send.");
-        byte[] answer = inQueue.take();
+        ByteBuffer answer = inQueue.take();
+        byte signal = answer.get();
         log.info("Server response received");
-        if (answer[0] == REG_OK)
+        if (signal == REG_OK)
             regOk();
-        if (answer[0] == REG_FAIL)
+        if (signal == REG_FAIL)
             regFail();
     }
 
