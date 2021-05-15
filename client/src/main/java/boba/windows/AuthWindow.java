@@ -165,7 +165,7 @@ public class AuthWindow {
         mainWindow.setTitle("Cloud Puppy");
         mainWindow.setResizable(false);
 
-        mainWindowCtrl.setNavigator(new Navigator(rootDir.getText()));
+        mainWindowCtrl.setNavigator(new Navigator(rootDir.getText(), serverAddress.getText()));
         mainWindowCtrl.setQueue(outQueue, inQueue);
 
         authWindow.close();

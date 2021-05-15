@@ -12,8 +12,9 @@ import static lupa.SignalBytes.AUTH_OK;
 
 public class Gatekeeper extends ChannelInboundHandlerAdapter {
     private static final Logger log = Logger.getLogger(Gatekeeper.class);
+    private String  remoteAddress;
     private boolean auth = false;
-    private final String HOME_DIR = "storage/";
+    private final String HOME_DIR = "data/";
     private WorkerJack jack;
 
 
@@ -32,6 +33,7 @@ public class Gatekeeper extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
+        this.remoteAddress = ctx.channel().remoteAddress().toString();
         log.debug(String.format("Client %s connect.", ctx.channel().remoteAddress().toString()));
     }
 
@@ -50,7 +52,7 @@ public class Gatekeeper extends ChannelInboundHandlerAdapter {
         switch (resultByte) {
             case AUTH_OK -> {
                 auth = true;
-                jack = new WorkerJack(new Navigator(HOME_DIR + arch.getLogin()));
+                jack = new WorkerJack(new Navigator(HOME_DIR + arch.getLogin(), remoteAddress));
                 log.info(String.format("Authentication successful. User: %s", arch.getLogin()));
             }
             case AUTH_FAIL -> log.info("Authentication fail.");

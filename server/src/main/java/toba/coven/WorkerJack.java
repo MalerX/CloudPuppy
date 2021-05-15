@@ -29,15 +29,6 @@ public class WorkerJack {
             case REFRESH -> {
                 log.info("Request received refresh.");
                 String tmpStr = navigator.refresh();
-
-//                ByteBuffer result = ByteBuffer.allocate(LENGTH_SIG_BYTE
-//                        + LENGTH_INT
-//                        + tmpStr.length());
-//                result.put(REFRESH)
-//                        .put(ByteBuffer.allocate(LENGTH_INT).putInt(tmpStr.length()).array())
-//                        .put(tmpStr.getBytes(StandardCharsets.UTF_8))
-//                        .flip();
-//                ctx.writeAndFlush(result.array());
                 ctx.writeAndFlush(Unpooled.wrappedBuffer(
                         tmpStr.getBytes(StandardCharsets.UTF_8)));
             }

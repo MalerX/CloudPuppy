@@ -3,6 +3,7 @@ package lupa;
 public final class SignalBytes {
     public static final int LENGTH_SIG_BYTE = 1;
     public final static int LENGTH_INT = 4;
+    public final static int LENGTH_LONG= 8;
 
     public static final byte AUTH = 2;
     public static final byte AUTH_OK = 3;
@@ -19,4 +20,5 @@ public final class SignalBytes {
     public static final byte BACK = 41;
     public static final byte REFRESH = 43;
     public static final byte ERR = 47;
+    public static final byte OK = 53;
 }

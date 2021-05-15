@@ -17,8 +17,10 @@ public class Navigator {
     private final File root;
     private File currentDir;
     private File lastDir;
+    private final String remoteAddress;
 
-    public Navigator(String root) {
+    public Navigator(String root, String remoteAddress) {
+        this.remoteAddress = remoteAddress;
         this.root = new File(root).getAbsoluteFile();
         if (this.root.exists()) {
             log.info(String.format("User work directory %s already exists", root));

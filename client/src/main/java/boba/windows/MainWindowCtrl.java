@@ -8,7 +8,6 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.TextInputDialog;
 import javafx.stage.Stage;
 import lupa.Navigator;
-import lupa.SignalBytes;
 import org.apache.log4j.Logger;
 
 import java.nio.ByteBuffer;
