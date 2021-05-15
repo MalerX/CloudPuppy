@@ -10,7 +10,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
-public class Navigator {
+public class Navigator implements INavigate{
     private static final Logger log = Logger.getLogger(Navigator.class);
     public static final String DELIMETR = "Hz784kj'''wf8d3";        //TODO Подобрать делимитер получше.
 
@@ -29,6 +29,7 @@ public class Navigator {
         this.currentDir = this.lastDir = this.root;
     }
 
+    @Override
     public String refresh() {
         List<File> filesInCurrDir = Arrays.asList(
                 Objects.requireNonNull(currentDir.listFiles()));
@@ -50,6 +51,7 @@ public class Navigator {
         return result.substring(0, result.length() - DELIMETR.length());
     }
 
+    @Override
     public void mkDir(String nameDir) {
         if (nameDir == null ||
                 Files.exists(Paths.get(currentDir.getPath(), nameDir))) {
@@ -67,6 +69,7 @@ public class Navigator {
         }
     }
 
+    @Override
     public void back() {
         if (lastDir.exists()) {
             File tmpFile = lastDir;
@@ -78,6 +81,7 @@ public class Navigator {
             log.info("The requested directory does not exist or has been deleted.");
     }
 
+    @Override
     public void joinDir(String nameDir) {
         if (nameDir == null)
             return;
@@ -90,6 +94,7 @@ public class Navigator {
         }
     }
 
+    @Override
     public void upDir() {
         if (currentDir.equals(root)) {
             log.info(String.format("%s is root directory. Moving higher is prohibited",
@@ -102,6 +107,7 @@ public class Navigator {
                 lastDir.getName(), currentDir.getName()));
     }
 
+    @Override
     public void rmItem(String item) {
         if (item == null)
             return;
@@ -111,5 +117,19 @@ public class Navigator {
                 log.info(String.format("Item %s remove", item));
         } else
             log.info(String.format("Removing item %s fail.", item));
+    }
+
+    @Override
+    public void upload(String uploadFile, int remotePort) {
+        Dispatch dispatch = new Dispatch(remoteAddress, currentDir);
+        dispatch.send(remotePort, uploadFile);
+        log.info("File upload has started.");
+    }
+
+    @Override
+    public int download() {
+        Dispatch dispatch = new Dispatch(remoteAddress, currentDir);
+        dispatch.received();
+        return dispatch.getLocalPort();
     }
 }

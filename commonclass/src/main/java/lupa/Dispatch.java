@@ -17,14 +17,11 @@ import static lupa.SignalBytes.*;
 
 public class Dispatch {
     private static final Logger log = Logger.getLogger(Dispatch.class);
-    private static final int BUFFER_SIZE = 512;
+    private static final int BUFFER_SIZE = 1024;
 
-    private File currentDir;
-    private String remoteAddress;
-    private int localPort;
-
-    public Dispatch() {
-    }
+    private final File currentDir;
+    private final String remoteAddress;
+    private final int localPort;
 
     public Dispatch(String remoteAddress, File currentDir) {
         this.remoteAddress = remoteAddress;
@@ -42,27 +39,48 @@ public class Dispatch {
         return localPort;
     }
 
-    public void send(int remotePort, File file) {
+    public void send(int remotePort, String fileName) {
         new Thread(() -> {
             FileChannel fileChannel = null;
             try (SocketChannel socketChannel = SocketChannel.open(
                     new InetSocketAddress(remoteAddress, remotePort))) {
 
+                File file = new File(currentDir, fileName);
+                if (file.isDirectory() && !file.exists()) {
+                    sendSignal(socketChannel, ERR);
+                    throw new RuntimeException(
+                            String.format("The object %s was not found or is a directory.", fileName));
+                } else {
+                    sendSignal(socketChannel, OK);
+                    log.info(String.format("File %s checked. Continue transmission.", fileName));
+                }
+
+                fileChannel = FileChannel.open(file.toPath(), StandardOpenOption.READ);
+
                 log.info("The connection is established. Send the header.");
-                sendHeader(socketChannel, file.getName(), file.length());
+                sendHeader(socketChannel, file.getName(), fileChannel.size());
 
                 byte signal = getSignal(socketChannel);
                 if (signal == OK) {
                     log.info("The header is delivered. The server is ready to receive the file.");
-                    fileChannel = FileChannel.open(file.toPath(), StandardOpenOption.READ);
-                    long sendByte = fileChannel.transferTo(fileChannel.position(), fileChannel.size(), socketChannel);
-                    socketChannel.socket().getOutputStream().flush();
-                    fileChannel.close();
-                    log.info(String.format("The file has been sent. Transmitted %d bytes", sendByte));
+                    long sendBytes;
+                    do {
+                        sendBytes = fileChannel.transferTo(fileChannel.position(), BUFFER_SIZE, socketChannel);
+                        socketChannel.socket().getOutputStream().flush();
+                        fileChannel.position(fileChannel.position() + sendBytes);
+                    } while (sendBytes > 0);
+                    log.info(String.format("The file has been sent. Transmitted %d bytes", fileChannel.size()));
                 } else
                     throw new RuntimeException("Error send header or file already exists on the remote host.");
             } catch (IOException e) {
                 log.error("Fail connect to remote host.", e);
+            } finally {
+                try {
+                    assert fileChannel != null;
+                    fileChannel.close();
+                } catch (IOException e) {
+                    log.error("Fail close file channel.");
+                }
             }
         }).start();
     }
@@ -75,10 +93,15 @@ public class Dispatch {
             try {
                 serverSocket = ServerSocketChannel.open();
                 serverSocket.socket().bind(new InetSocketAddress(localPort));
+                log.info("Wait connect client.");
                 socketChannel = serverSocket.accept();
                 log.info("The client is connected.");
 
-                Header header = headerParse(socketChannel);
+                if (getSignal(socketChannel) == ERR)
+                    throw new RuntimeException("Aborted operation.");
+
+                Header header = new Header().getHeader(socketChannel);
+
                 File receivedFile = new File(currentDir, header.getName());
                 if (receivedFile.exists()) {
                     sendSignal(socketChannel, ERR);
@@ -92,14 +115,18 @@ public class Dispatch {
                                 StandardOpenOption.WRITE));
                 log.info("File create. Open channel. Ready receive content.");
                 sendSignal(socketChannel, OK);
-
-                long receivedBytes = fileChannel.transferFrom(socketChannel, fileChannel.position(), header.getSize());
-                log.info(String.format("Received completed. Receive  %d bytes", receivedBytes));
+                long receivedBytes;
+                do {
+                    receivedBytes = fileChannel.transferFrom(socketChannel, fileChannel.position(), BUFFER_SIZE);
+                    fileChannel.position(fileChannel.position() + receivedBytes);
+                } while (receivedBytes > 0);
+                log.info(String.format("Received completed. Receive  %d bytes", fileChannel.size()));
 
             } catch (IOException e) {
                 e.printStackTrace();
             } finally {
                 try {
+                    assert fileChannel != null;
                     fileChannel.close();
                     socketChannel.close();
                     serverSocket.close();
@@ -136,16 +163,6 @@ public class Dispatch {
         log.info("Header successfully send.");
     }
 
-    private Header headerParse(SocketChannel channel) throws IOException {
-        ByteBuffer header = ByteBuffer.allocate(BUFFER_SIZE);
-        channel.read(header);
-        header.flip();
-        byte[] nameByte = new byte[header.getInt()];
-        header.get(nameByte);
-        long sizeInFile = header.getLong();
-        return new Header(new String(nameByte), sizeInFile);
-    }
-
     private byte getSignal(SocketChannel channel) throws IOException {
         ByteBuffer signal = ByteBuffer.allocate(LENGTH_SIG_BYTE);
         channel.read(signal);
@@ -153,28 +170,39 @@ public class Dispatch {
         return signal.get();
     }
 
-    public static void main(String[] args) throws InterruptedException {
+    /* Инкапсулировал работу с заголовком во вложенном классе. Так как возвращаемых значений >1,
+то использовать внутренний класс предпочтительнее, чем метод. */
+    private static class Header {
+        private String fileName;
+        private long fileSize;
+
+        public Header getHeader(SocketChannel channel) throws IOException {
+            ByteBuffer header = ByteBuffer.allocate(BUFFER_SIZE);
+            channel.read(header);
+            header.flip();
+            byte[] nameByte = new byte[header.getInt()];
+            header.get(nameByte);
+            long sizeIncomingFile = header.getLong();
+
+            this.fileName = new String(nameByte);
+            this.fileSize = sizeIncomingFile;
+
+            return this;
+        }
+
+        public String getName() {
+            return fileName;
+        }
+
+        public long getSize() {
+            return fileSize;
+        }
+    }
+
+    public static void main(String[] args) {
         Dispatch dispatch = new Dispatch("localhost", new File("data/malerx"));
-        int inPort = dispatch.getLocalPort();
+        int port = dispatch.getLocalPort();
         dispatch.received();
-        dispatch.send(inPort, new File("data/storage/README.md"));
-    }
-}
-
-class Header {
-    private final String fileName;
-    private final long fileSize;
-
-    protected Header(String fileName, long fileSize) {
-        this.fileName = fileName;
-        this.fileSize = fileSize;
-    }
-
-    public String getName() {
-        return fileName;
-    }
-
-    public long getSize() {
-        return fileSize;
+//        dispatch.send(port, new File("data/storage/2.jpg"));
     }
 }

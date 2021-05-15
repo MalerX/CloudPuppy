@@ -7,6 +7,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextInputDialog;
 import javafx.stage.Stage;
+import lupa.INavigate;
 import lupa.Navigator;
 import org.apache.log4j.Logger;
 
@@ -49,10 +50,14 @@ public class MainWindowCtrl {
     public Button upDirCloudBtn;
     @FXML
     public Button rmItemCloudBtn;
+    @FXML
+    public Button uploadBtn;
+    @FXML
+    public Button downloadBtn;
 
     private Stage mainWindow;
 
-    private Navigator navigator;
+    private INavigate navigator;
 
     private BlockingQueue<byte[]> outQueue;
     private BlockingQueue<byte[]> inQueue;
@@ -62,7 +67,7 @@ public class MainWindowCtrl {
         this.inQueue = inQueue;
     }
 
-    public void setNavigator(Navigator navigator) {
+    public void setNavigator(INavigate navigator) {
         this.navigator = navigator;
         refreshLC();
         refreshCL();
@@ -193,5 +198,32 @@ public class MainWindowCtrl {
         outQueue.add(requestRmItem);
         log.info("A request was sent to delete an item.");
         refreshCL();
+    }
+
+    public void upload(ActionEvent actionEvent) {
+        outQueue.add(new byte[]{UPLOAD});
+        String nameFile = localFiles.getSelectionModel().getSelectedItem();
+        int remotePort = 0;
+        try {
+            remotePort = ByteBuffer.wrap(inQueue.take()).getInt();
+        } catch (InterruptedException e) {
+            log.error("Fail received remote port", e);
+        }
+        navigator.upload(nameFile, remotePort);
+    }
+
+    public void download(ActionEvent actionEvent) {
+        String fileName = cloudFiles.getSelectionModel().getSelectedItem();
+        int localPort = navigator.download();
+        ByteBuffer request = ByteBuffer.allocate(LENGTH_SIG_BYTE
+                + LENGTH_INT
+                + fileName.getBytes(StandardCharsets.UTF_8).length
+                + LENGTH_INT);
+        request.put(DOWNLOAD)
+                .putInt(fileName.getBytes(StandardCharsets.UTF_8).length)
+                .put(fileName.getBytes(StandardCharsets.UTF_8))
+                .putInt(localPort)
+                .flip();
+        outQueue.add(request.array());
     }
 }

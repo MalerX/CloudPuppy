@@ -3,8 +3,7 @@ package toba.coven;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.handler.stream.ChunkedFile;
-import lupa.Navigator;
+import lupa.INavigate;
 import org.apache.log4j.Logger;
 
 import java.nio.ByteBuffer;
@@ -14,9 +13,9 @@ import static lupa.SignalBytes.*;
 
 public class WorkerJack {
     private static final Logger log = Logger.getLogger(WorkerJack.class);
-    private final Navigator navigator;
+    private final INavigate navigator;
 
-    public WorkerJack(Navigator navigator) {
+    public WorkerJack(INavigate navigator) {
         this.navigator = navigator;
     }
 
@@ -51,6 +50,22 @@ public class WorkerJack {
             case RM -> {
                 log.info("A request was received to delete an item.");
                 navigator.rmItem(getName(inBuff));
+            }
+            case UPLOAD -> {
+                log.info("Uploading a file to the server. Create the receiving object. Open the socket.");
+                int receivedPort = navigator.download();
+
+                ctx.writeAndFlush(Unpooled.wrappedBuffer(
+                        ByteBuffer.allocate(LENGTH_INT)
+                                .putInt(receivedPort).array()));
+            }
+            case DOWNLOAD -> {
+                log.info("Uploading a file to the client. Create an object. Open the socket.");
+                byte[] nameByte = new byte[inBuff.getInt()];
+                inBuff.get(nameByte);
+                int clientPort = inBuff.getInt();
+                String fileName = new String(nameByte);
+                navigator.upload(fileName, clientPort);
             }
         }
     }

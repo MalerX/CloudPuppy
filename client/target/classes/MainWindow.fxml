@@ -83,7 +83,7 @@
                AnchorPane.leftAnchor="320.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="40.0">
         <buttons>
             <Button fx:id="backCloudBtn" mnemonicParsing="false" prefHeight="32.0" prefWidth="32.0" translateX="-19.0"
-            onAction="#backCloud">
+                    onAction="#backCloud">
                 <graphic>
                     <ImageView fitHeight="32.0" fitWidth="32.0" pickOnBounds="true" preserveRatio="true">
                         <Image url="@ico/draw-arrow-back.png"/>
@@ -133,7 +133,7 @@
         </buttons>
     </ButtonBar>
     <VBox prefHeight="100.0" prefWidth="40.0" AnchorPane.leftAnchor="271.0" AnchorPane.topAnchor="220.0">
-        <Button mnemonicParsing="false" prefHeight="32.0" prefWidth="32.0">
+        <Button fx:id="uploadBtn" mnemonicParsing="false" prefHeight="32.0" prefWidth="32.0" onAction="#upload">
             <VBox.margin>
                 <Insets left="4.0" top="5.0"/>
             </VBox.margin>
@@ -143,7 +143,8 @@
                 </ImageView>
             </graphic>
         </Button>
-        <Button layoutX="14.0" layoutY="15.0" mnemonicParsing="false" prefHeight="32.0" prefWidth="32.0">
+        <Button fx:id="downloadBtn" layoutX="14.0" layoutY="15.0" mnemonicParsing="false" prefHeight="32.0"
+                prefWidth="32.0" onAction="#download">
             <VBox.margin>
                 <Insets left="4.0" top="20.0"/>
             </VBox.margin>
