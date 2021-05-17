@@ -14,11 +14,12 @@ public class Gatekeeper extends ChannelInboundHandlerAdapter {
     private static final Logger log = Logger.getLogger(Gatekeeper.class);
     private String  remoteAddress;
     private boolean auth = false;
-    private final String HOME_DIR = "data/";
+    private final String HOME_DIR;
     private WorkerJack jack;
 
 
-    public Gatekeeper() {
+    public Gatekeeper(String homeDir) {
+        this.HOME_DIR = homeDir;
     }
 
     @Override

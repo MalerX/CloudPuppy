@@ -13,9 +13,11 @@ import toba.coven.Gatekeeper;
 public class ServerNetty {
     private static Logger log = Logger.getLogger(ServerNetty.class);
     private final int PORT;
+    private final String homeDir;
 
-    public ServerNetty(final int PORT) {
+    public ServerNetty(final int PORT, String homeDir) {
         this.PORT = PORT;
+        this.homeDir = homeDir;
     }
 
     public void start() {
@@ -30,7 +32,7 @@ public class ServerNetty {
                         @Override
                         protected void initChannel(SocketChannel socketChannel) throws Exception {
                             socketChannel.pipeline()
-                                    .addLast(new Gatekeeper());
+                                    .addLast(new Gatekeeper(homeDir));
                         }
                     });
             ChannelFuture future = bootstrap.bind(PORT).sync();
