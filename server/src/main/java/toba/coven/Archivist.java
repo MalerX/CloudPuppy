@@ -1,15 +1,19 @@
 package toba.coven;
 
 import io.netty.buffer.ByteBuf;
-
-import static lupa.Commands.*;
-
-import lupa.Commands;
+import javafx.util.Pair;
 import org.apache.log4j.Logger;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.nio.file.Paths;
 import java.sql.*;
 
+import static lupa.SignalBytes.*;
+
 public class Archivist {
+
     private static final Logger log = Logger.getLogger(Archivist.class);
     private String login;
     private Connection connection;
@@ -17,6 +21,10 @@ public class Archivist {
 
     public Archivist() {
         try {
+            if (!new File("data").exists()) {
+                new File("data").mkdir();
+                log.info("Create directory 'data'.");
+            }
             Class.forName("org.sqlite.JDBC");
             this.connection = DriverManager.getConnection("jdbc:sqlite:data/CLOUDPUPPY.users.db");
             connection.prepareStatement(
@@ -32,57 +40,52 @@ public class Archivist {
         return login;
     }
 
-    public Commands authentication(Object msg) {
-        ByteBuf buf = ((ByteBuf) msg);
-        byte[] msgIn = new byte[buf.readableBytes()];
-        buf.readBytes(msgIn);
-        String authStr = new String(msgIn).trim();
+    public byte authentication(Object msg) {
+        ByteBuf buff = (ByteBuf) msg;
+        ByteBuffer inBuff = buff.nioBuffer();
+        byte signal = inBuff.get();
 
-        if (authStr.startsWith(AUTH.name()))
-            return getAuth(authStr) ? AUTH_OK : AUTH_FAIL;
-        if (authStr.startsWith(REG.name()))
-            return getReg(authStr) ? REG_OK : REG_FAIL;
+
+        if (signal == AUTH)
+            return getAuth(inBuff) ? AUTH_OK : AUTH_FAIL;
+        if (signal == REG)
+            return getReg(inBuff) ? REG_OK : REG_FAIL;
         return ERR;
     }
 
-    private boolean getReg(String authStr) {
-        String[] regStr = authStr.split("\\s", 4);
-
-        if (!regStr[2].equals(regStr[3])) {
-            log.info(String.format(
-                    "Registration user %s fail, wrong password.", regStr[1]));
-            return false;
-        }
+    private boolean getReg(ByteBuffer buff) {
         try {
+            Pair<String, String> loginPass = getLoginPassword(buff);
+
             statement = connection.prepareStatement(
                     "INSERT INTO 'users' ('login', 'password') VALUES (?, ?);"
             );
-            statement.setString(1, regStr[1]);
-            statement.setString(2, regStr[2]);
+            statement.setString(1, loginPass.getKey());
+            statement.setString(2, loginPass.getValue());
             statement.execute();
-            log.info(String.format("New user with login %s successfully registered.", regStr[1]));
+            log.info(String.format("New user with login %s successfully registered.", loginPass.getKey()));
             return true;
-        } catch (SQLException e) {
+        } catch (SQLException | IOException e) {
             log.error(String.format("Fail registration new user: %s", e));
         }
         return false;
     }
 
-    private boolean getAuth(String authStr) {
-        String[] loginPass = authStr.split("\\s");
+    private boolean getAuth(ByteBuffer buff) {
         String truePass = "";
-
+        Pair<String, String> loginPass = new Pair<>(null, null);
         try {
+            loginPass = getLoginPassword(buff);
+            login = loginPass.getKey();
             statement = connection.prepareStatement(
                     "SELECT * FROM users WHERE login = ?"
             );
-            statement.setString(1, loginPass[1]);
+            statement.setString(1, login);
             ResultSet resultSet = statement.executeQuery();
             while (resultSet.next()) {
-                login = resultSet.getString("login");
                 truePass = resultSet.getString("password");
             }
-        } catch (SQLException e) {
+        } catch (SQLException | IOException e) {
             log.error("Error read DataBase ", e);
         } finally {
             try {
@@ -92,6 +95,22 @@ public class Archivist {
                 log.error("Fail close connection.");
             }
         }
-        return truePass.equals(loginPass[2]);
+        return truePass.equals(loginPass.getValue());
+    }
+
+    private Pair<String, String> getLoginPassword(ByteBuffer buff) throws IOException {
+        byte[] tmpByteArray = new byte[LENGTH_INT];
+
+        buff.get(tmpByteArray);
+        byte[] loginInByte = new byte[ByteBuffer.wrap(tmpByteArray).getInt()];
+        buff.get(loginInByte);
+        String inLogin = new String(loginInByte);
+
+        buff.get(tmpByteArray);
+        byte[] passwordInByte = new byte[ByteBuffer.wrap(tmpByteArray).getInt()];
+        buff.get(passwordInByte);
+        String inPassword = new String(passwordInByte);
+
+        return new Pair<>(inLogin, inPassword);
     }
 }

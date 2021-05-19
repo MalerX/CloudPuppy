@@ -4,21 +4,22 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
-import lupa.Commands;
+import lupa.Navigator;
 import org.apache.log4j.Logger;
 
-import java.nio.charset.StandardCharsets;
-
-import static lupa.Commands.*;
+import static lupa.SignalBytes.AUTH_FAIL;
+import static lupa.SignalBytes.AUTH_OK;
 
 public class Gatekeeper extends ChannelInboundHandlerAdapter {
     private static final Logger log = Logger.getLogger(Gatekeeper.class);
-    private boolean auth_ok = false;
-    private String homeDir = "storage/";
-    private String login;
+    private String  remoteAddress;
+    private boolean auth = false;
+    private final String HOME_DIR;
+    private WorkerJack jack;
 
 
-    public Gatekeeper() {
+    public Gatekeeper(String homeDir) {
+        this.HOME_DIR = homeDir;
     }
 
     @Override
@@ -33,39 +34,30 @@ public class Gatekeeper extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
+        this.remoteAddress = ctx.channel().remoteAddress().toString();
         log.debug(String.format("Client %s connect.", ctx.channel().remoteAddress().toString()));
     }
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-        if (!auth_ok)
+        if (auth) {
+            jack.work(ctx, msg);
+        } else {
             ctx.writeAndFlush(getAuth(msg));
-        else {
-            ByteBuf buf = ((ByteBuf) msg);
-            byte[] msgIn = new byte[buf.readableBytes()];
-            buf.readBytes(msgIn);
-            byte[] out = new byte[msgIn.length];
-            int k = msgIn.length - 1;
-            for (int i = 0; i < msgIn.length; i++) {
-                out[k--] = msgIn[i];
-            }
-            ctx.writeAndFlush(Unpooled.wrappedBuffer(out));
         }
     }
 
     private ByteBuf getAuth(Object msg) {
         Archivist arch = new Archivist();
-        Commands commands = arch.authentication(msg);
-        switch (commands) {
+        byte resultByte = arch.authentication(msg);
+        switch (resultByte) {
             case AUTH_OK -> {
-                auth_ok = true;
-                login = arch.getLogin();
-                homeDir += login;
-                log.info(String.format("Authentication successful. User: %s", login));
+                auth = true;
+                jack = new WorkerJack(new Navigator(HOME_DIR + arch.getLogin(), remoteAddress));
+                log.info(String.format("Authentication successful. User: %s", arch.getLogin()));
             }
-            case AUTH_FAIL ->
-                    log.info("Authentication fail.");
+            case AUTH_FAIL -> log.info("Authentication fail.");
         }
-        return Unpooled.wrappedBuffer(commands.name().getBytes(StandardCharsets.UTF_8));
+        return Unpooled.wrappedBuffer(new byte[]{resultByte});
     }
 }
